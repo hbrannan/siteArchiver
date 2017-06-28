@@ -6,7 +6,8 @@
   "author": "Hannah_Brannan <hannahbrannan@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "test": "echo no tests"
   },
   "dependencies": {
     "body-parser": "^1.17.2",

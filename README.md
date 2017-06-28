@@ -9,19 +9,12 @@
  - client: ``yarn start``
  - server: ``nodemon server/index.js``
 
-## BUILD:
-
-``... ``
-
-
 ## TEST:
 
-``... ``
+``yarn test``
 
 
-## NOTES:
-
-
+## DB TABLES:
 Sites:
   - id
   - url
