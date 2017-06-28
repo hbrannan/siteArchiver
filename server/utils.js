@@ -1,16 +1,64 @@
-const db = require('../server/connection');
+const db = require('../database/connection');
 
-// add the url to the db
+/* if site exists: add to hitCount
+  // if html, return it.
+  // else : return: archive coming soon!
+ else site !exists: add it.
+*/
+const checkForSite = (targetUrl) => {
+  db.Site.findOne({
+    where: {
+      url : targetUrl
+    }
+  })
+  .then(site => {
+    console.log(site);
+    if (site && site.dataValues.html){
+      //increase 'hitCount' by 1;
+      //if html
+      return site.dataValues.html;
+      //else coming soon
+    } else {
+      return addNewSite(targetUrl);
+    }
+  })
+  .catch(err => err);
+};
 
-//create a worker queue -- redis?
-// --- where to host this queue?
+/*
+  Site: url, html, hit_count
+*/
+const addNewSite = (targetUrl) => {
+  console.log('calling addNewSite');
+  db.Site.create({
+    url: targetUrl
+  })
+  .then((data) => {
+    console.log(data.dataValues)
+    //then get the ID and add a task w that id
+    // if errors here, send error
+  })
+  .catch((err) => console.log(err));
+};
 
-// ea time a usr posts a site, push it on
+const pullFromQueue = () => {
+  //note: do this in batches?
 
-// worker shifts off queue, fetches & stores the
-// content of the site
+  // get lowest id,
+  // find site w/ that site idx
+  // request html
+  // addHtml()
+};
 
-// try to fetch site
-  // if has content, return content
-  //res.redirect()
-  // else, return: Still working!
+const addHtml = (siteId, html) => {
+  // store html at siteId
+  // shiftOffQueu
+};
+
+const shiftOffQueue =  () => {
+  //
+};
+
+module.exports = {
+  checkForSite: checkForSite
+};

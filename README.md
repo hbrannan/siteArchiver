@@ -1,40 +1,44 @@
 ## DESCRIPTION:
-
-  React/Redux web scraper with REST API and worker that fetches and archives HTML
+  Web Scraper with React/Redux client, client-side cache (top 5 most-hit & user-accessed sites), node/ express server, a worker on a cron cycle, and a sql db.
 
 ## TODOS:
-
- - React
- - Redux
- - Jest/ Ember?
- - Chai/ Mocha ?
- - Chai/ Mocha ?
+ - Testing
+ -
 
 ## RUN:
-
-``yarn start``
+ - client: ``yarn start``
+ - server: ``nodemon server/index.js``
 
 ## BUILD:
 
-``yarn ... ``
+``... ``
 
 
 ## TEST:
 
-``yarn ... ``
+``... ``
 
 
-Batch jobs:
+## NOTES:
 
-Batch deletes:
 
-Data:
+Sites:
+  - id
   - url
-  - content
+  - htmlContent
+  - hitCount
   - timestamp
+
+Queue:
+  - id
+  - site_id
 
 
 API:
-  get existing content (url)
+  post /site
+  get /sites -top5 hits
 
-  post (exists? doesn't exist -> )
+
+STRETCH ideas:
+ - top 5 display (mini-screenshot)
+ - update old sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);

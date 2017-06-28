@@ -14,7 +14,10 @@ module.exports = {
       filename: 'index.html',
       inject: 'body'
     }),
-    new ExtractTextPlugin('[name].css')
+    new ExtractTextPlugin('[name].css'),
+    new webpack.ProvidePlugin({
+      Promise: 'es6-promise-promise'
+    })
   ],
   module: {
     loaders: [

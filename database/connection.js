@@ -13,32 +13,37 @@ const Site = sequelize.define('sites', {
     autoIncrement: true,
     primaryKey: true
   },
-  url: { // NOT NULL
+  url: {
     type: Sequelize.STRING
   },
-  html: { // COULD BE NULL OR W/ CONTENT
-    type: Sequelize.STRING
+  html: {
+    type: Sequelize.STRING,
+    allowNull: true
   }
 });
 
-// const Task = sequelize.define('queue')
-// ID -- autoincrementing -- primary ID
-// reference to site Id
-// id incrementing
-// always fetch first 5 (lowest primID)
+const Task = sequelize.define('queue', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  }
+});
 
-// Task.hasOne(Site) // adds Task to site
-// Task.belongsTo(Site)  // adds Site to Task
+Task.hasOne(Site);
+
 
 sequelize.sync();
+//FOR DEV
+// sequelize.drop();
 
+//FOR DEV
 sequelize.authenticate().then(() => {
   console.log('db connection authenticated');
 })
 .catch((err) => {
   console.error('unable to connect', err)
-})
-// sequelize.drop();
+});
 
 module.exports = {
   Site: Site,
