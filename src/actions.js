@@ -18,13 +18,5 @@ export function requestUrl (url) {
 
 
 /*
-fetch('http://localhost:3000/api/v1/sign_in', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json'
-    },
-    body: {
-      login: 'test'
-    }
-})
+example: https://github.com/matthew-andrews/isomorphic-fetch/issues/51
 */

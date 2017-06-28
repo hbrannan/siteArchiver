@@ -6,11 +6,6 @@ const utils = require('./utils');
 //middleware
 const path = require('path');
 const bodyParser = require('body-parser');
-const request = require('request');
-const fs = require('fs');
-
-
-// request('http://' + url).pipe(fs.createWriteStream(paths.archivedSites + '/' + url, defaults));
 
 //Customize cors middleware
 const allowCrossDomain = (req, res, next) => {
@@ -33,22 +28,33 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname + '/../client/index.html'));
 });
 
+//TODO: adjust this to post
 app.get('/site', (req, res) => {
   console.log('G E T T I N G   S I T E ', req.query);
-  return new Promise ((resolve, reject) => {
-    request(`http://${req.query}`, (error, response, body) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(response, body);
-      }
-    })
+
+  utils.checkForSite(req.query.url)
+  .then((site) => {
+    let shouldAddSite = false;
+
+    if (!site) {
+      shouldAddSite = true;
+    } else if (site && site.html) {
+      //Redirect  |  Send
+      res.status(200).send(site.html);
+    } else {
+      res.status(200).send('Check back soon! Archiving site!');
+    }
+
+    return shouldAddSite;
   })
-  .then((data) => {
-    console.log('tryna promisify', data.body)
-    res.status(200).send('will eventually do some work here');
+  .then((shouldAddSite) => {
+    if (shouldAddSite){
+      utils.addNewSite(req.query.url)
+      .then(data => res.send('Check back soon! Archiving site!'))
+      .catch(err => res.send({error: err}))
+    }
   })
-  .catch( err => res.status(400).send(err));
+  .catch ( err => res.send({error: err}) );
 });
 
 app.post('/site', (req, res) => {

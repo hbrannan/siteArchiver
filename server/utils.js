@@ -1,64 +1,71 @@
 const db = require('../database/connection');
 
-/* if site exists: add to hitCount
-  // if html, return it.
-  // else : return: archive coming soon!
- else site !exists: add it.
-*/
+// if site exists: call addToHitCount... return site
+//  else site !exist: add it as site & task.
 const checkForSite = (targetUrl) => {
-  db.Site.findOne({
+  console.log('checking db for site', targetUrl)
+  return db.Site.findOne({
     where: {
       url : targetUrl
     }
   })
   .then(site => {
-    console.log(site);
-    if (site && site.dataValues.html){
-      //increase 'hitCount' by 1;
-      //if html
-      return site.dataValues.html;
-      //else coming soon
+    if (site) {
+      console.log('should incr hit count');
+      return increaseHitCount(site.id);
     } else {
-      return addNewSite(targetUrl);
+      return site;
     }
   })
   .catch(err => err);
 };
 
-/*
-  Site: url, html, hit_count
-*/
+// add as a new site, & call new task
+//TODO: refactor 24-27 as per:
+  //http://docs.sequelizejs.com/manual/tutorial/associations.html#foreign-keys
 const addNewSite = (targetUrl) => {
   console.log('calling addNewSite');
-  db.Site.create({
-    url: targetUrl
+  return db.Site.create({
+    url: targetUrl,
+    hitCount: 0
   })
-  .then((data) => {
-    console.log(data.dataValues)
-    //then get the ID and add a task w that id
-    // if errors here, send error
+  .then((site) => {
+    return addNewTask(site.dataValues.id)
   })
-  .catch((err) => console.log(err));
+  .catch((err) => err);
 };
 
-const pullFromQueue = () => {
-  //note: do this in batches?
-
-  // get lowest id,
-  // find site w/ that site idx
-  // request html
-  // addHtml()
+//add a new task
+const addNewTask = (site_id) => {
+  console.log('adding task')
+  return db.Task.create({
+    site_id: site_id
+  })
+  .then((site) => {
+    return site;
+  })
+  .catch((err) => err);
 };
 
-const addHtml = (siteId, html) => {
-  // store html at siteId
-  // shiftOffQueu
-};
-
-const shiftOffQueue =  () => {
-  //
+//get site by id, and increase its hit count
+const increaseHitCount = (site_id) => {
+  console.log('incr call')
+  return db.Site.findOne({ where: {
+    id: site_id
+  }})
+  .then((site) => {
+    site.hitCount +=1;
+    return site.save();
+  })
+  .then(site => {
+    console.log('site hit count', site.hitCount);
+    return site;
+  })
+  .catch(err => err);
 };
 
 module.exports = {
-  checkForSite: checkForSite
+  checkForSite: checkForSite,
+  addNewSite: addNewSite,
+  increaseHitCount: increaseHitCount
 };

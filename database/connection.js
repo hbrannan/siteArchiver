@@ -19,6 +19,9 @@ const Site = sequelize.define('sites', {
   html: {
     type: Sequelize.STRING,
     allowNull: true
+  },
+  hitCount: {
+    type: Sequelize.INTEGER
   }
 });
 
@@ -38,14 +41,15 @@ sequelize.sync();
 // sequelize.drop();
 
 //FOR DEV
-sequelize.authenticate().then(() => {
-  console.log('db connection authenticated');
-})
-.catch((err) => {
-  console.error('unable to connect', err)
-});
+// sequelize.authenticate().then(() => {
+//   console.log('db connection authenticated');
+// })
+// .catch((err) => {
+//   console.error('unable to connect', err)
+// });
 
 module.exports = {
   Site: Site,
+  Task: Task,
   sequelize: sequelize
 };
