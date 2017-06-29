@@ -5,7 +5,7 @@ const sequelize = new Sequelize('sites_archive', 'usr', 'pwd', {
   storage: './database.sqlite'
 });
 
-console.log(' L O A D E D   D B')
+console.log(' L O A D E D   D B');
 
 const Site = sequelize.define('sites', {
   id: {
@@ -33,9 +33,6 @@ const Task = sequelize.define('tasks', {
   }
 });
 
-// Site.hasOne(Task);
-// Site.belongsTo(Task);
-// Task.hasOne(Site);
 Task.belongsTo(Site);
 
 
