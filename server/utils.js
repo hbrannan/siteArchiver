@@ -1,64 +1,62 @@
 const db = require('../database/connection');
 
-/* if site exists: add to hitCount
-  // if html, return it.
-  // else : return: archive coming soon!
- else site !exists: add it.
-*/
+// site exists: call addToHitCount... return site
+// else : add site as site &... as task.
 const checkForSite = (targetUrl) => {
-  db.Site.findOne({
+  console.log('checking db for site', targetUrl)
+  return db.Site.findOne({
     where: {
       url : targetUrl
     }
   })
   .then(site => {
-    console.log(site);
-    if (site && site.dataValues.html){
-      //increase 'hitCount' by 1;
-      //if html
-      return site.dataValues.html;
-      //else coming soon
+    if (site) {
+      return increaseHitCount(site.id);
     } else {
-      return addNewSite(targetUrl);
+      return site;
     }
   })
   .catch(err => err);
 };
 
-/*
-  Site: url, html, hit_count
-*/
+// add as a new site, & call new task
 const addNewSite = (targetUrl) => {
   console.log('calling addNewSite');
-  db.Site.create({
-    url: targetUrl
+  return db.Site.create({
+    url: targetUrl,
+    hitCount: 0
   })
-  .then((data) => {
-    console.log(data.dataValues)
-    //then get the ID and add a task w that id
-    // if errors here, send error
+  .then((site) => {
+    return addNewTask(site.id);
   })
-  .catch((err) => console.log(err));
+  .catch((err) => err);
 };
 
-const pullFromQueue = () => {
-  //note: do this in batches?
-
-  // get lowest id,
-  // find site w/ that site idx
-  // request html
-  // addHtml()
+//add a new task and set the site_id as a foreign key
+const addNewTask = (site_id) => {
+  console.log('adding task')
+  return db.Task.create()
+  .then((task) => {
+    return task.setSite(site_id)
+  })
+  .catch((err) => err);
 };
 
-const addHtml = (siteId, html) => {
-  // store html at siteId
-  // shiftOffQueu
-};
-
-const shiftOffQueue =  () => {
-  //
+//get site by id, and increase its hit count
+const increaseHitCount = (site_id) => {
+  console.log('incr hit count')
+  return db.Site.findOne({ where: {
+    id: site_id
+  }})
+  .then((site) => {
+    site.hitCount +=1;
+    return site.save();
+  })
+  .catch(err => err);
 };
 
 module.exports = {
-  checkForSite: checkForSite
+  checkForSite: checkForSite,
+  addNewSite: addNewSite,
+  increaseHitCount: increaseHitCount
 };

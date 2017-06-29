@@ -19,10 +19,13 @@ const Site = sequelize.define('sites', {
   html: {
     type: Sequelize.STRING,
     allowNull: true
+  },
+  hitCount: {
+    type: Sequelize.INTEGER
   }
 });
 
-const Task = sequelize.define('queue', {
+const Task = sequelize.define('tasks', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -30,7 +33,10 @@ const Task = sequelize.define('queue', {
   }
 });
 
-Task.hasOne(Site);
+// Site.hasOne(Task);
+// Site.belongsTo(Task);
+// Task.hasOne(Site);
+Task.belongsTo(Site);
 
 
 sequelize.sync();
@@ -38,14 +44,15 @@ sequelize.sync();
 // sequelize.drop();
 
 //FOR DEV
-sequelize.authenticate().then(() => {
-  console.log('db connection authenticated');
-})
-.catch((err) => {
-  console.error('unable to connect', err)
-});
+// sequelize.authenticate().then(() => {
+//   console.log('db connection authenticated');
+// })
+// .catch((err) => {
+//   console.error('unable to connect', err)
+// });
 
 module.exports = {
   Site: Site,
+  Task: Task,
   sequelize: sequelize
 };
