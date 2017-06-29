@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const allowCrossDomain = (req, res, next) => {
   res.header('access-control-allow-origin', '*');
   res.header('access-control-allow-method', '*');
-  res.header('Content-Type','text/html');
+  res.header('Content-Type','text/html'); //
   if (req.method == 'OPTIONS') {
     res.status(200).send(200);
   } else {
@@ -20,6 +20,9 @@ const allowCrossDomain = (req, res, next) => {
 };
 
 app.use(allowCrossDomain);
+app.use(bodyParser.text());
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded());
 app.use(express.static(path.resolve(__dirname + '/../client')));
 
 //R O U T E S
@@ -28,7 +31,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname + '/../client/index.html'));
 });
 
-//TODO: adjust this to post
+//TODO: pivot to post
 app.get('/site', (req, res) => {
   console.log('G E T T I N G   S I T E ', req.query);
 
@@ -57,10 +60,10 @@ app.get('/site', (req, res) => {
   .catch ( err => res.send({error: err}) );
 });
 
-app.post('/site', (req, res) => {
-  console.log('P O S T I N G   S I T E ', req.body);
-  res.status(200).send('will eventually do some work');
-});
+// app.post('/site', (req, res) => {
+//   console.log('P O S T I N G   S I T E ', req.body);
+  // res.status(200).send('Check back soon! Archiving site!');
+// });
 
 //L I S T E N
 
