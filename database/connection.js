@@ -25,7 +25,7 @@ const Site = sequelize.define('sites', {
   }
 });
 
-const Task = sequelize.define('queue', {
+const Task = sequelize.define('tasks', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -33,7 +33,10 @@ const Task = sequelize.define('queue', {
   }
 });
 
-Task.hasOne(Site);
+// Site.hasOne(Task);
+// Site.belongsTo(Task);
+// Task.hasOne(Site);
+Task.belongsTo(Site);
 
 
 sequelize.sync();

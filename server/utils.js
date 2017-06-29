@@ -1,7 +1,7 @@
 const db = require('../database/connection');
 
-// if site exists: call addToHitCount... return site
-//  else site !exist: add it as site & task.
+// site exists: call addToHitCount... return site
+// else : add site as site &... as task.
 const checkForSite = (targetUrl) => {
   console.log('checking db for site', targetUrl)
   return db.Site.findOne({
@@ -11,7 +11,6 @@ const checkForSite = (targetUrl) => {
   })
   .then(site => {
     if (site) {
-      console.log('should incr hit count');
       return increaseHitCount(site.id);
     } else {
       return site;
@@ -21,8 +20,6 @@ const checkForSite = (targetUrl) => {
 };
 
 // add as a new site, & call new task
-//TODO: refactor 24-27 as per:
-  //http://docs.sequelizejs.com/manual/tutorial/associations.html#foreign-keys
 const addNewSite = (targetUrl) => {
   console.log('calling addNewSite');
   return db.Site.create({
@@ -30,36 +27,30 @@ const addNewSite = (targetUrl) => {
     hitCount: 0
   })
   .then((site) => {
-    return addNewTask(site.dataValues.id)
+    return addNewTask(site.id);
   })
   .catch((err) => err);
 };
 
-//add a new task
+//add a new task and set the site_id as a foreign key
 const addNewTask = (site_id) => {
   console.log('adding task')
-  return db.Task.create({
-    site_id: site_id
-  })
-  .then((site) => {
-    return site;
+  return db.Task.create()
+  .then((task) => {
+    return task.setSite(site_id)
   })
   .catch((err) => err);
 };
 
 //get site by id, and increase its hit count
 const increaseHitCount = (site_id) => {
-  console.log('incr call')
+  console.log('incr hit count')
   return db.Site.findOne({ where: {
     id: site_id
   }})
   .then((site) => {
     site.hitCount +=1;
     return site.save();
-  })
-  .then(site => {
-    console.log('site hit count', site.hitCount);
-    return site;
   })
   .catch(err => err);
 };
