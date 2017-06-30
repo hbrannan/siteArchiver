@@ -1,15 +1,16 @@
-import React from 'react'; // , { Component }
-import Form from  '../containers/Form';
-// import PropTypes from 'prop-types';
+import React from 'react'
+import SearchDisplay from './SearchDisplay'
+import SiteDisplay from '../containers/SiteDisplay'
+import PropTypes from 'prop-types'
 // import './App.less';
 
-const App = ({}) => (
-  <div>
-    <h1>Web Crawler</h1>
-    <Form />
-    <div></div>
-  </div>
-);
+const App = ({isDisplayingSite}) => {
+  if (!isDisplayingSite) return <SearchDisplay />;
+  else return <SiteDisplay />;
+}
 
+App.propTypes = {
+  isDisplayingSite: PropTypes.bool.isRequired
+};
 
 export default App;

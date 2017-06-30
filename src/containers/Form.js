@@ -16,7 +16,7 @@ class Form extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  //TODO: increase robustness of this function
+  //TODO: increase robustness of this function, separate this out into : "static"
   vetUrl () {
     //remove http://
     var val = this.state.formValue.split('//');
@@ -32,17 +32,13 @@ class Form extends Component {
     } else {
       return `${val}.com`;
     }
-
   }
 
   handleSubmit (e) {
     e.preventDefault();
     const { dispatch } = this.props;
-
-    //validation || trimming
     const vettedUrl = this.vetUrl();
 
-    //dispatch action
     dispatch(requestUrl(vettedUrl));
 
     // -> spinner
@@ -60,6 +56,7 @@ class Form extends Component {
           <input onChange={this.handleChange} placeholder="Search for a site"/>
         </form>
         <div className="form__response"></div>
+        <div className="form__loading-dock"></div>
       </div>
     );
   }
