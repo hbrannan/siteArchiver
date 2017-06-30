@@ -23,7 +23,6 @@ describe('App (Snapshot)', () => {
 
 });
 
-
 /*
   Resources
   - Understanding a component’s contract: defines the expected behavior of your component and

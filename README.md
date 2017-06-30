@@ -29,9 +29,10 @@ Queue:
 
 API:
   post /site
-  get /sites -top5 hits
+  get /top-sites
 
 
 STRETCH ideas:
  - top 5 display (mini-screenshot)
  - update old sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
+ - categories
