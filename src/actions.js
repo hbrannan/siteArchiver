@@ -1,6 +1,21 @@
 import fetch from 'isomorphic-fetch';
 const serverPath = 'http://localhost:3000';
 
+/*
+ T O C
+  requestUrl
+      - REQUESTING_URL
+      - HTML_FETCH_SUCCESS
+      - URL_COMING_SOON
+      - URL_FETCH_FAILURE
+  requestTopFive
+      - REQUESTING_TOP_Five
+      - TOP_FIVE_SUCCESS
+      - TOP_FIVE_FAILURE
+  backToMain
+      - BACK_TO_MAIN
+*/
+
 export const REQUESTING_URL = 'REQUESTING_URL'
 function requestingUrl (url) {
   return {
@@ -52,12 +67,50 @@ export function requestUrl (url) {
   }
 }
 
+export function requestTopFive () {
+  return dispatch => {
+    dispatch(requestingTopFive())
+    return fetch(`${serverPath}/top-sites`)
+    .then(
+      response => response.json(),
+      error => dispatch(topFiveError(error))
+    )
+    .then(result => {
+      console.log(result)
+      if (result.sites) {
+        dispatch(topFiveSuccess(result.sites))
+      }
+    })
+  };
+}
+
+export const REQUESTING_TOP_FIVE = 'REQUESTING_TOP_FIVE'
+function requestingTopFive () {
+  return { type: REQUESTING_TOP_FIVE }
+}
+
+export const TOP_FIVE_SUCCESS = 'TOP_FIVE_SUCCESS'
+function topFiveSuccess (sites) {
+  return {
+    type: TOP_FIVE_SUCCESS,
+    sites
+  }
+}
+
+export const TOP_FIVE_FAILURE = 'TOP_FIVE_FAILURE'
+function topFiveError (errObj) {
+  return {
+    type: TOP_FIVE_FAILURE,
+    errObj
+  }
+}
+
 export function backToMain () {
   return { type: 'BACK_TO_MAIN' }
 }
 
 
-/*
+/* todo: compare to blogs
 https://codepen.io/stowball/post/a-dummy-s-guide-to-redux-and-thunk-in-react
 http://redux.js.org/docs/advanced/AsyncActions.html
 example: https://github.com/matthew-andrews/isomorphic-fetch/issues/51

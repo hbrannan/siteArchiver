@@ -47,10 +47,6 @@ class Form extends Component {
 
   render () {
     const { responseMessage } = this.props;
-    let loading;
-    if (this.props.isFetching){
-      loading = <SpinWheel />;
-    }
 
     return (
       <div className="form__container">
@@ -58,14 +54,13 @@ class Form extends Component {
           <input onChange={this.handleChange} placeholder="Search for a site"/>
         </form>
         <div className="form__response">{responseMessage}</div>
-        <div className="form__loading-dock">{loading}</div>
+        <div className="form__loading-dock"><SpinWheel /></div>
       </div>
     );
   }
 }
 
 Form.propTypes = {
-  isFetching: PropTypes.bool.isRequired,
   responseMessage: PropTypes.string.isRequired,
   dispatchUrlRequest: PropTypes.func.isRequired
 }

@@ -1,15 +1,18 @@
 const request = require('request');
 const db = require('../database/connection');
 
-/*
-  *Handle HTML Fetch Queue
-    -pull From Queue
-    -fetchURL
-    -fetchHTML
-    -addHTML
-    -shift off of Queue
+/*T. O. C
+
+ *Handle HTML Fetch Queue
+    -pullFromQueue
+    _fetchURL
+    _fetchHTML
+    _addHTML
+    _shift off of Queue
+
 
   *Fetch Top 5 Sites
+
 */
 
 //Fetch the id and siteId from the taskQueue -> fetchURL()
@@ -116,17 +119,18 @@ const shiftOffQueue = (site_id) => {
 exports.getTopFiveSites = () => {
   console.log('c a l l i n g   g e t    t o p   fi v e ')
   return db.Site.findAll({
-    attributes: [
-        [db.sequelize.fn('max', db.sequelize.col('hitCount')), 'html']
-    ],
+    limit: 5,
     order: [
       ['hitCount', 'DESC']
-    ],
-    limit: 5
+    ]
   })
   .then((sites) => {
-    console.log('sites at top 5 are ', sites)
-    return sites;
+    let html = [];
+    sites.forEach((site)=> { html.push({url: site.url, html: site.html, hits: site.hitCount}) });
+    return html;
   })
-  .catch(err => err);
+  .catch(err => {
+    console.log('err is', err)
+    return err
+  });
 };
