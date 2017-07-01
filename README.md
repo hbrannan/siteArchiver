@@ -1,6 +1,6 @@
 ## DESCRIPTION:
-  Web Scraper & Archiver with React/Redux client (and cheerio), top 5 most-hit sites display, Node/Express API,
-  an archiver worker & a top-5-update worker on cron cycles, and Sequelize + sql db.
+  Web Scraper & Archiver with SearchView, DisplayView, and top 5 most-hit-sites display.
+  -React/Redux - HTML5 iframes -Node/Express API -cron regulated workers -and Sequelize + sql db.
 
 ## TODOS:
  - init cron jobs

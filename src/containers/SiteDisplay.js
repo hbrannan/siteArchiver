@@ -5,12 +5,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 let SiteDisplay = ({currentSite}) => (
-  <div>
+  <div className="display__container">
     <div className="header">
       <h1>Web Crawler</h1>
       <BackButton />
     </div>
-    <SiteFrame site={currentSite}/>
+    <div className="site__container">
+      <SiteFrame site={currentSite}/>
+    </div>
   </div>
 );
 

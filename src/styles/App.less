@@ -1,0 +1,30 @@
+//External Styles
+@import './_vendor_normalize.less';
+
+//Globally defined styles
+@import './_defaults.less';
+@import './_utils.less';
+
+//Components (from general -> specific use cases)
+@import 'components/_Form.less';
+@import 'components/_TopFiveList.less';
+@import 'components/_SiteDisplay.less';
+
+.display__container {
+  margin: .75rem;
+  .flex-display(flex);
+  .flex-direction(row);
+  .flex-wrap(wrap);
+  .justify-content(center);
+}
+
+.display__header {
+  width: 100%;
+  .flex-display(flex);
+  .flex-direction(row);
+
+  h1 {
+    width: 100%;
+    text-align: center;
+  }
+}

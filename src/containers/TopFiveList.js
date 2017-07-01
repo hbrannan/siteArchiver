@@ -7,7 +7,7 @@ let TopFiveList = ({topFive}) => (
   <div className="top-five__container">
     {
       topFive.map((html, rank) => {
-        return <div key={rank}><SiteFrame site={html} /></div>
+        return <div className="frame__container" key={rank}><SiteFrame site={html} /></div>
       })
     }
   </div>
