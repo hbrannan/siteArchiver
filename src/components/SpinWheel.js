@@ -9,7 +9,7 @@ let SpinWheel = ({isFetching}) => {
 }
 
 const mapStateToProps = state => ({
-  isFetching: state.top_five.isFetching
+  isFetching: state.top_five.isFetching || state.url.isFetching
 });
 
 SpinWheel.propTypes = {
