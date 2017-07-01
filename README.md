@@ -1,9 +1,15 @@
 ## DESCRIPTION:
-  Web Scraper with React/Redux client, client-side cache (top 5 most-hit & user-accessed sites), node/ express server, a worker on a cron cycle, and a sql db.
+  Web Scraper & Archiver with React/Redux client (and cheerio), top 5 most-hit sites display, Node/Express API,
+  an archiver worker & a top-5-update worker on cron cycles, and Sequelize + sql db.
 
 ## TODOS:
- - Testing
- -
+ - init cron jobs
+ - init top-5 query on TopFive containerDidMount
+     -& syncactions -> state updates -> render mapping
+ - improve testing coverage
+ - refactor post
+ - escape html at fetch, and store escaped in db
+ - add styles
 
 ## RUN:
  - client: ``yarn start``
@@ -29,9 +35,12 @@ Queue:
 
 API:
   post /site
-  get /sites -top5 hits
+  get /top-sites
 
 
 STRETCH ideas:
  - top 5 display (mini-screenshot)
- - update old sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
+ - update sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
+ - site categories
+ - cache user-sites in browser
+ - users have own top sites, which would override general top 5

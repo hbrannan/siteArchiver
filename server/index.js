@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const allowCrossDomain = (req, res, next) => {
   res.header('access-control-allow-origin', '*');
   res.header('access-control-allow-method', '*');
-  res.header('Content-Type','text/html'); //
+  res.header('Content-Type','application/json'); //todo: answer : [if]_when/how set multiple header types
   if (req.method == 'OPTIONS') {
     res.status(200).send(200);
   } else {
@@ -20,9 +20,7 @@ const allowCrossDomain = (req, res, next) => {
 };
 
 app.use(allowCrossDomain);
-app.use(bodyParser.text());
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 app.use(express.static(path.resolve(__dirname + '/../client')));
 
 //R O U T E S
@@ -38,28 +36,26 @@ app.get('/site', (req, res) => {
   utils.checkForSite(req.query.url)
   .then((site) => {
     let shouldAddSite = false;
-
     if (!site) {
       shouldAddSite = true;
     } else if (site && site.html) {
-      //Redirect  |  Send
-      res.status(200).send(site.html);
+      res.status(301).send({html: site.html});
     } else {
-      res.status(200).send('Check back soon! Archiving site!');
+      res.status(404).send({msg:'Check back soon! Archiving site!'});
     }
-
     return shouldAddSite;
   })
   .then((shouldAddSite) => {
     if (shouldAddSite){
       utils.addNewSite(req.query.url)
-      .then(data => res.send('Check back soon! Archiving site!'))
-      .catch(err => res.send({error: err}))
+      .then(data => res.status(201).send({msg:'Check back soon! Archiving site!'}))
+      .catch(err => res.status(400).send({error: err}))
     }
   })
   .catch ( err => res.send({error: err}) );
 });
 
+//https://github.com/matthew-andrews/isomorphic-fetch/issues/34
 // app.post('/site', (req, res) => {
 //   console.log('P O S T I N G   S I T E ', req.body);
   // res.status(200).send('Check back soon! Archiving site!');
