@@ -1,4 +1,4 @@
-const cron = require('cron').CronJob;
+const Job = require('cron').CronJob;
 const request = require('request');
 const db = require('../database/connection');
 const workerUtils = require('./workerUtils');
@@ -15,20 +15,13 @@ const workerUtils = require('./workerUtils');
 
 /*     *     *     *     *     *     *     *     *     *     *     *     */
 
-exports.archiveSites = new cron(
-  '10 * * * * *',
-  workerUtils.pullFromQueue(), /// will not be
-  (res) => {
-    console.log('pull completed', res);
-  },
-  true
-);
+exports.archiveSites = new Job('5 * * * * *', function() {
+  return workerUtils.pullFromQueue();
+}, null, true, 'America/Los_Angeles');
 
-exports.updateTopFive = new cron(
+exports.updateTopFive = new Job(
   '* 5 * * * *',
   workerUtils.getTopFiveSites(),
-  (res) => {
-    console.log('pull completed', res);
-  },
+  null,
   true
 );

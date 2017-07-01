@@ -5,8 +5,7 @@ import PropTypes from 'prop-types'
 import '../styles/App.less';
 
 const App = ({isDisplayingSite}) => {
-  if (!isDisplayingSite) return <SearchDisplay />;
-  else return <SiteDisplay />;
+  return isDisplayingSite ?  <SiteDisplay /> : <SearchDisplay />;
 }
 
 App.propTypes = {

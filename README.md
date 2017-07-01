@@ -3,13 +3,13 @@
   -React/Redux - HTML5 iframes -Node/Express API -cron regulated workers -and Sequelize + sql db.
 
 ## TODOS:
+ - add styles
  - init cron jobs
  - init top-5 query on TopFive containerDidMount
      -& syncactions -> state updates -> render mapping
  - improve testing coverage
  - refactor post
  - escape html at fetch, and store escaped in db
- - add styles
 
 ## RUN:
  - client: ``yarn start``

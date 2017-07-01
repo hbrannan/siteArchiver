@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.port || 3000;
 const utils = require('./utils');
+const workerJobs = require('./worker');
 
 //middleware
 const path = require('path');

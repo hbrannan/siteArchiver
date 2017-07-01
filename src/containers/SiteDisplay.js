@@ -20,7 +20,6 @@ const mapStateToProps = state => ({
   currentSite: state.app.currentSite
 });
 
-
 SiteDisplay.propTypes = {
   currentSite: PropTypes.string.isRequired
 }
