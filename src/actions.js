@@ -3,7 +3,6 @@ const serverPath = 'http://localhost:3000';
 
 export const REQUESTING_URL = 'REQUESTING_URL'
 function requestingUrl (url) {
-  console.log('requesting url')
   return {
     type: REQUESTING_URL,
     url
@@ -11,17 +10,15 @@ function requestingUrl (url) {
 }
 
 export const HTML_FETCH_SUCCESS = 'HTML_FETCH_SUCCESS'
-function urlHTMLSuccess (htmlObj) {
-  console.log('html present!')
+function urlHTMLSuccess (html) {
   return {
     type: HTML_FETCH_SUCCESS,
-    htmlObj
+    html
   }
 }
 
 export const URL_COMING_SOON = 'URL_COMING_SOON'
 function urlComingSoon (msgObj) {
-  console.log('html coming soon!')
   return {
     type: URL_COMING_SOON,
     msgObj
@@ -56,7 +53,6 @@ export function requestUrl (url) {
 }
 
 export function backToMain () {
-  console.log('clicked back')
   return { type: 'BACK_TO_MAIN' }
 }
 

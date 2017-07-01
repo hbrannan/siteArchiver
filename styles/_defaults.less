@@ -1,0 +1,75 @@
+//
+//  Base » General
+//
+//  General website styles.
+//
+//  -----------------------------------------
+//
+//  Table of Contents:
+//
+//    Box Sizing
+//    Clearfix
+//    Element Visibility
+//    List Components
+//
+//  -----------------------------------------
+
+// - Box Sizing
+//
+// learn more: http://www.paulirish.com/2012/box-sizing-border-box-ftw/
+//
+// ---------
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+// - Clearfix
+//
+// learn more: http://nicolasgallagher.com/micro-clearfix-hack/
+//
+// ---------
+
+.clearfix {
+  *zoom: 1;
+
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+// - Element Visibility
+//
+// ---------
+
+.is-visible {
+  display: block;
+}
+
+// - List Components
+//
+// ---------
+
+ul {
+  display: flex;
+  padding: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+li {
+
+  list-style: none;
+}
