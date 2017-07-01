@@ -11,7 +11,7 @@
 //    - Line Height
 //    - Inline-block
 //    - Border Radius
-//    - Drop Shadow
+//    - Box Shadow
 //    - Rotate
 //    - Transition
 //    - Transform
@@ -112,17 +112,17 @@
           transition: @property @duration @effect;
 }
 
-// - Drop Shadow
+// - box Shadow
 //
 // ---------
 
-.drop-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) {
+.box-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) {
   -webkit-box-shadow: @x @y @blur @spread rgba(0, 0, 0, @alpha);
      -moz-box-shadow: @x @y @blur @spread rgba(0, 0, 0, @alpha);
           box-shadow: @x @y @blur @spread rgba(0, 0, 0, @alpha);
 }
 
-.drop-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) when (@x = none) {
+.box-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) when (@x = none) {
   -webkit-box-shadow: none;
      -moz-box-shadow: none;
           box-shadow: none;

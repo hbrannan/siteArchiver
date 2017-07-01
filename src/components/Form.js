@@ -39,7 +39,6 @@ class Form extends Component {
     dispatchUrlRequest(vettedUrl);
 
     // this.setState({formValue: ''}); // how to do this in react for inputs?
-    // -> then ... Form Response (comes thru other action)
   }
 
   handleChange (e){
