@@ -1,15 +1,19 @@
 ## DESCRIPTION:
-  Web Scraper & Archiver with SearchView, DisplayView, and top 5 most-hit-sites display.
+  Web Scraper & Archiver with SearchView (using HTML5 iFrames), DisplayView, and top 5 most-hit-sites display.
   -React/Redux - HTML5 iframes -Node/Express API -cron regulated workers -and Sequelize + sql db.
 
+  Note: turns out Bill Nye The Science Guy's website is a.m.a.z.i.n.g!
+
 ## TODOS:
- - init cron jobs
- - init top-5 query on TopFive containerDidMount
-     -& syncactions -> state updates -> render mapping
- - improve testing coverage
+ - add styles
+ - clear form value
+ - map state to props through getState
  - refactor post
  - escape html at fetch, and store escaped in db
- - add styles
+ - topFive error message display
+ - webhook for topFiveUpdate incl. if error, keep what's there.
+ - improve testing coverage
+ - clean actions.js
 
 ## RUN:
  - client: ``yarn start``
@@ -28,17 +32,16 @@ Sites:
   - hitCount
   - timestamp
 
-Queue:
+Queue: (hasOne : Site)
   - id
   - site_id
 
-
-API:
+## API:
   post /site
   get /top-sites
 
 
-STRETCH ideas:
+## STRETCH ideas:
  - top 5 display (mini-screenshot)
  - update sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
  - site categories

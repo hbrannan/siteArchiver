@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = process.env.port || 3000;
 const utils = require('./utils');
+const workerJobs = require('./workers');
+const { getTopFiveSites } = require('./workerUtils');
 
 //middleware
 const path = require('path');
@@ -41,7 +43,7 @@ app.get('/site', (req, res) => {
     } else if (site && site.html) {
       res.status(301).send({html: site.html});
     } else {
-      res.status(404).send({msg:'Check back soon! Archiving site!'});
+      res.status(200).send({msg:'Check back soon! Archiving site!'});
     }
     return shouldAddSite;
   })
@@ -49,11 +51,25 @@ app.get('/site', (req, res) => {
     if (shouldAddSite){
       utils.addNewSite(req.query.url)
       .then(data => res.status(201).send({msg:'Check back soon! Archiving site!'}))
-      .catch(err => res.status(400).send({error: err}))
+      .catch(err => res.status(500).send({error: err}))
     }
   })
   .catch ( err => res.send({error: err}) );
 });
+
+
+app.get('/top-sites', (req, res) => {
+  console.log('G E T T I N G   T O P   S I T E S   O N   R  E Q U E S T');
+
+  getTopFiveSites()
+  .then(sites => {
+    console.log(sites);
+    res.status(200).send({ sites: sites });
+  })
+  .catch ( err => res.status(500).send({error: err}) );
+
+});
+
 
 //https://github.com/matthew-andrews/isomorphic-fetch/issues/34
 // app.post('/site', (req, res) => {

@@ -4,7 +4,6 @@ import { requestUrl } from '../actions'
 import Form from '../components/Form';
 
 const mapStateToProps = state => ({
-  isFetching: state.url.isFetching,
   responseMessage: state.url.response_message
 });
 
