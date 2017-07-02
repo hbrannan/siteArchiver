@@ -6,3 +6,10 @@ let SiteFrame = ({site}) => (
 );
 
 export default SiteFrame
+
+/*
+todo, consider refactor:
+shouldComponentUpdate() {
+ return false;
+}
+*/

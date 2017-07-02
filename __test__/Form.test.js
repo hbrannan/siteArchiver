@@ -98,5 +98,4 @@ Testing TODOS:
 
 
 //TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.
-
 //https://github.com/reactjs/redux/blob/master/docs/recipes/WritingTests.md

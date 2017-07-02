@@ -2,15 +2,11 @@
   Web Scraper & Archiver with SearchView (using HTML5 iFrames), DisplayView, and top 5 most-hit-sites display.
   -React/Redux - HTML5 iframes -Node/Express API -cron regulated workers -and Sequelize + sql db.
 
-  Note: turns out Bill Nye The Science Guy's website is a.m.a.z.i.n.g!
-
 ## TODOS:
  - add styles
- - refactor post
  - escape html at fetch, and store escaped in db
  - topFive error message display
  - webhook for topFiveUpdate incl. if error, keep what's there.
- - user gets back job id, can query for status
  - improve testing coverage
 
 ## RUN:

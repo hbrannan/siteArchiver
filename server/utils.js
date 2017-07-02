@@ -1,5 +1,22 @@
 const db = require('../database/connection');
 
+const checkForSiteAsTask = (targetId) => {
+  console.log('check for site  A S   T A S K', targetId)
+  return db.Site.findOne({
+    where: {
+      id : targetId
+    }
+  })
+  .then(site => {
+    if (site) {
+      return increaseHitCount(site.id);
+    } else {
+      return site;
+    }
+  })
+  .catch(err => err);
+};
+
 // site exists: call addToHitCount... return site
 // else : add site as site &... as task.
 const checkForSite = (targetUrl) => {
@@ -58,5 +75,6 @@ const increaseHitCount = (site_id) => {
 module.exports = {
   checkForSite: checkForSite,
   addNewSite: addNewSite,
-  increaseHitCount: increaseHitCount
+  increaseHitCount: increaseHitCount,
+  checkForSiteAsTask: checkForSiteAsTask
 };

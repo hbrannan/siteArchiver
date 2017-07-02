@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('sites_archive', 'usr', 'pwd', {
+const sequelize = new Sequelize('sites_archive_test', 'usr', 'pwd', {
   dialect: 'sqlite',
   host: 'localhost',
-  storage: './database.sqlite'
+  storage: './databaseTest.sqlite'
 });
 
 console.log(' L O A D E D   D B');
@@ -42,5 +42,5 @@ sequelize.sync();
 module.exports = {
   Site: Site,
   Task: Task,
-  sequelize: sequelize
+  sqTest: sequelize
 };

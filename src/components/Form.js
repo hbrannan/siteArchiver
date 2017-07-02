@@ -16,10 +16,14 @@ class Form extends Component {
 
   handleSubmit (e) {
     e.preventDefault();
-    const { dispatchUrlRequest } = this.props;
-    const vettedUrl = Form.vetUrl(this.state.formValue);
-    dispatchUrlRequest(vettedUrl);
-    this.setState({formValue: ''});
+    const val = this.state.formValue;
+
+    if(val.length){
+      const { dispatchUrlRequest } = this.props;
+      const vettedUrl = Form.vetUrl(val);
+      dispatchUrlRequest(vettedUrl);
+      this.setState({formValue: ''});
+    }
   }
 
   handleChange (e){
@@ -32,7 +36,7 @@ class Form extends Component {
     return (
       <div className="form__container">
         <form onSubmit={this.handleSubmit}>
-          <input value={this.state.formValue} onChange={this.handleChange} placeholder="Search for a site"/>
+          <input value={this.state.formValue} onChange={this.handleChange} placeholder="Search for a site or enter job_id"/>
         </form>
         <div className="form__response">{responseMessage}</div>
         <div className="form__loading-dock"><SpinWheel /></div>
@@ -41,23 +45,26 @@ class Form extends Component {
   }
 
   /*
-    TODO: increase fn robustness
-    Param, inputUrl = STRING
+    Param, inputUrl = STRING || NUMBER
     Remove http:// & /if !domainExists, add default ->  `.com`
   */
   static vetUrl (inputUrl) {
-    var val = inputUrl.split('//');
-    if ( val.length > 1 ) {
-      val = val[1];
-    } else {
-      val = val[0];
-    }
+    if ( isNaN(inputUrl)){
+      var val = inputUrl.split('//');
+      if ( val.length > 1 ) {
+        val = val[1];
+      } else {
+        val = val[0];
+      }
 
-    const valSplitAtDot = val.split('.');
-    if (valSplitAtDot.length > 1) {
-      return val;
+      const valSplitAtDot = val.split('.');
+      if (valSplitAtDot.length > 1) {
+        return val;
+      } else {
+        return encodeURI(`${val}.com`);
+      }
     } else {
-      return `${val}.com`;
+      return inputUrl;
     }
   }
 }
