@@ -1,29 +1,23 @@
-const expect = require('chai').expect
-const express = require('express');
-const path = require('path')
-const bodyParser = require('body-parser');
+// const expect = require('chai').expect
 const supertest = require('supertest')
 const app = require('../server/server.js')
 const request =  supertest(app);
 
-//Customize cors middleware
-const allowCrossDomain = (req, res, next) => {
-  res.header('access-control-allow-origin', '*');
-  res.header('access-control-allow-method', '*');
-  res.header('access-control-allow-headers', 'Content-Type');
-  res.header('Content-Type','application/json'); //todo: answer : [if]_when/how set multiple header types
-  if (req.method == 'OPTIONS') {
-    res.status(200).send(200);
-  } else {
-    next();
-  }
-};
+console.log('T E S T   E N V', process.env, process.env.NODE_ENV)
 
-app.use(allowCrossDomain);
-app.use(bodyParser.json());
-app.use(express.static(path.resolve(__dirname + '/../client')));
+//todo: before/ after cleanup hooks; increased specificity in expect behavior
 
 describe('Server', () => {
+
+  it('fetches the topFiveSites', (done) => {
+    request
+      .get('/top-sites')
+      .expect(200)
+      .end(function (err, res) {
+        done();
+      });
+  })
+
   it('serves the static client', (done) => {
     request
       .get('/')
@@ -33,27 +27,81 @@ describe('Server', () => {
       });
   })
 
-  it('checks the db for a site when posted a url', ()=> {
-
+  it('does not check the db for a site failing a posted url', (done) => {
+    request
+      .post('/site')
+      .expect(400)
+      .end(function (err, res) {
+        done();
+      });
   })
 
-  it('does not check the db failing a posted url', ()=> {
-
+  it('returns html for a site when provided a completed id', (done) => {
+    request
+    .get('/site?id=1')
+    .expect(200)
+    .end(function (err, res) {
+      done();
+    });
   })
 
-  it('checks the db for a site when provided an id query', ()=> {
-
+  it('returns no-such-site message when provided an invalid id', (done) => {
+    request
+    .get('/site?id=10000000')
+    .expect(200)
+    .end(function (err, res) {
+      done();
+    });
   })
 
-  it('does not check the db for a site failing an id query', ()=> {
-
-  })
-
-  it('fetches the topFiveSites', ()=> {
-
+  it('does not check the db for a site failing an id query', (done) => {
+    request
+      .get('/site?id=')
+      .expect(400)
+      .end(function (err, res) {
+        done();
+      });
   })
 })
 
-describe('Site Fetch Possibilities', ()=> {
+describe('Site by URL', () => {
+  before(function(done) {
+    // remove database data here
+    done()
+  })
+
+  it('adds a site & task to the db when posted a new url', (done) => {
+    request
+      .post('/site')
+      .field('url', 'google.com')
+      .expect(201)
+      .end(function (err, res) {
+        done();
+      });
+  })
+
+  it('returns html for a url when available', (done) => {
+
+  })
+
+  it('returns msg & site_id if html as of yet unavailable', (done) => {
+
+  })
+
+  it('handles unexpected status codes', (done) => {
+
+  })
+
+  it('catches and returns error messages if needed', (done) => {
+
+  })
+
+})
+
+describe('Site by id', () => {
+
+})
+
+describe('Task', () => {
 
 })

@@ -34,42 +34,49 @@ app.get('/', (req, res) => {
 app.post('/site', (req, res) => {
   console.log('P O S T I N G   S I T E ', req.body.url);
 
-  utils.checkForSite(req.body.url)
-  .then((site) => {
-    let shouldAddSite = false;
-    if (!site) {
-      shouldAddSite = true;
-    } else if (site && site.html) {
-      res.status(301).send({html: site.html});
-    } else {
-      res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
-    }
-    return shouldAddSite;
-  })
-  .then((shouldAddSite) => {
-    if (shouldAddSite){
-      utils.addNewSite(req.body.url)
-      .then(site => res.status(201).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.siteId}`}))
-      .catch(err => res.status(500).send({error: err}))
-    }
-  })
-  .catch ( err => res.send({error: err}) );
+  if(req.body.url){
+    utils.checkForSite(req.body.url)
+    .then((site) => {
+      let shouldAddSite = false;
+      if (!site) {
+        shouldAddSite = true;
+      } else if (site && site.html) {
+        res.status(301).send({html: site.html});
+      } else {
+        res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
+      }
+      return shouldAddSite;
+    })
+    .then((shouldAddSite) => {
+      if (shouldAddSite){
+        utils.addNewSite(req.body.url)
+        .then(site => res.status(201).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.siteId}`}))
+        .catch(err => res.status(500).send({error: err}))
+      }
+    })
+    .catch ( err => res.send({error: err}) );
+  } else {
+    res.status(400).send({msg:'Bad request'});
+  }
 });
 
 app.get('/site', (req, res) => {
   console.log('G E T T I N G   S I T E ', req.query.id);
-
-  utils.checkForSiteAsTask(req.query.id)
-  .then((site) => {
-    if (site && site.html) {
-      res.status(301).send({html: site.html});
-    } else if (site) {
-      res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
-    } else {
-      res.status(200).send({msg:`We have no site with archive_job_id ${req.query.id}. Perhaps try typing in the site name.`});
-    }
-  })
-  .catch(err => res.status(500).send({error: err}))
+  if (req.query.id) {
+    utils.checkForSiteAsTask(req.query.id)
+    .then((site) => {
+      if (site && site.html) {
+        res.status(301).send({html: site.html});
+      } else if (site) {
+        res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
+      } else {
+        res.status(200).send({msg:`We have no site with archive_job_id ${req.query.id}. Perhaps try typing in the site name.`});
+      }
+    })
+    .catch(err => res.status(500).send({error: err}))
+  } else {
+    res.status(400).send({msg:'Bad request'});
+  }
 })
 
 app.get('/top-sites', (req, res) => {

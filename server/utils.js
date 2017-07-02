@@ -1,4 +1,5 @@
 const db = require('../database/connection');
+console.log('T A S K ', db.Task)
 
 const checkForSiteAsTask = (targetId) => {
   console.log('check for site  A S   T A S K', targetId)
