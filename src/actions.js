@@ -42,12 +42,11 @@ function urlComingSoon (msgObj) {
 
 export const URL_FETCH_FAILURE = 'URL_FETCH_FAILURE'
 function urlFetchError (errObj) {
-  return {
-    type: URL_FETCH_FAILURE,
-    errObj
-  }
+  console.log('Server error has occurred:', errObj)
+  return { type: URL_FETCH_FAILURE }
 }
 
+////TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.
 export function requestUrl (url) {
 
   return dispatch => {
@@ -57,12 +56,11 @@ export function requestUrl (url) {
     return fetch(`${serverPath}/site?url=${url}`)
     .then(
       response => response.json(),
-      error => {console.log('An error occured.', error); dispatch(urlFetchError(error)) }// need to dispatch the error
+      error => dispatch(urlFetchError(error))
     )
     .then(res => {
-      console.log('R E S U L T   I S ', res)
-      if (res.html) dispatch(urlHTMLSuccess(res.html))
-      else dispatch(urlComingSoon(res.msg))
+      if (res && res.html) dispatch(urlHTMLSuccess(res.html))
+      else if (res.msg) dispatch(urlComingSoon(res.msg))
     })
   }
 }
