@@ -1,25 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`App (Snapshot) consistently renders the App shell 1`] = `
-<div>
-  <h1>
-    Web Crawler
-  </h1>
-  <div
-    className="form__container"
-  >
-    <form
-      onSubmit={[Function]}
-    >
-      <input
-        onChange={[Function]}
-        placeholder="Search for a site"
-      />
-    </form>
-    <div
-      className="form__response"
-    />
-  </div>
-  <div />
-</div>
-`;
+exports[`App (Snapshot) consistently renders the App shell 1`] = `<div className="search__container" />`;

@@ -7,6 +7,9 @@
 ## TODOS:
  - add styles
  - clear form value
+ - change word "display" -> "screen"
+ - Screens to using React Router?
+ - pivot to universal?
  - map state to props through getState
  - refactor post
  - escape html at fetch, and store escaped in db

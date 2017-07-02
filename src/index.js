@@ -14,7 +14,7 @@ let store = createStore(
 );
 
 //F O R    D E V
-// console.log(store.getState());
+console.log(store.getState());
 
 ReactDOM.render(
   <Provider store={store}>
