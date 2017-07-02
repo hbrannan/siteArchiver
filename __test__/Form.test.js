@@ -1,22 +1,35 @@
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { requestUrl } from '../src/actions';
-import nock from 'nock';
-const serverPath = 'http://localhost:3000';
+import React from 'react'
+import renderer from 'react-test-renderer'
+import configureMockStore from 'redux-mock-store'
+import { Provider } from 'react-redux'
+import { shallow, mount } from 'enzyme'
+import nock from 'nock'
+import thunk from 'redux-thunk'
+import { requestUrl } from '../src/actions'
+import FormContainer from '../src/containers/Form'
+import Form from '../src/components/Form'
+const serverPath = 'http://localhost:3000'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
+const mokStor = mockStore({url: { isFetching: true, response_message:'', dispatchUrlRequest: jest.fn()} })
+jest.mock('../src/containers/SpinWheel', () => 'SpinWheel')
+const enzymeForm = mount(
+  <Provider store={mokStor}>
+    <FormContainer />
+  </Provider>
+);
 
 describe('async form actions', () => {
   let store;
   beforeEach(() => {
-    store = mockStore({ isFetching: true, response_message:'echo' })
+    store = mockStore({url: { isFetching: true, response_message:''} })
   })
   afterEach(() => {
     nock.cleanAll();
   })
 
-  it('creates HTML_FETCH_SUCCESS when a site has html', () => {
+  it('triggers html display action when site has html', () => {
     nock(`${serverPath}`)
       .get('/site?url=google.com')
       .reply(200, { html: 'dummyHTML' })
@@ -31,7 +44,7 @@ describe('async form actions', () => {
     })
   });
 
-  it('creates URL_COMING_SOON when a site is awaiting html', () => {
+  it('triggers coming soon actions when a site is awaiting html', () => {
     nock(`${serverPath}`)
       .get('/site?url=marlamaples.com')
       .reply(200, { msg: 'dummyMSG' })
@@ -60,7 +73,28 @@ describe('async form actions', () => {
       expect(store.getActions()).toEqual(expectedErrorActions)
     })
   });
+});
+
+describe('component props', () => {
+  it('should init with an empty response message', () => {
+    expect(enzymeForm.find(Form).props().responseMessage.length).toEqual(0);
+  });
+
+  it('should have a dispatchUrlRequest fn', () => {
+    expect(enzymeForm.find(Form).props().dispatchUrlRequest).toBeInstanceOf(Function);
+  });
 })
+
+describe('form submission', () => {
+  //TODO
+})
+
+/*
+
+Testing TODOS:
+- displays response message if exists
+- handleChange & handle submit event handlers
+*/
 
 
 //TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.

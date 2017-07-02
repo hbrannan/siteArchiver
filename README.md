@@ -6,17 +6,12 @@
 
 ## TODOS:
  - add styles
- - clear form value
- - change word "display" -> "screen"
- - Screens to using React Router?
- - pivot to universal?
- - map state to props through getState
  - refactor post
  - escape html at fetch, and store escaped in db
  - topFive error message display
  - webhook for topFiveUpdate incl. if error, keep what's there.
+ - user gets back job id, can query for status
  - improve testing coverage
- - clean actions.js
 
 ## RUN:
  - client: ``yarn start``

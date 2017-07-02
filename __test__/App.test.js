@@ -5,7 +5,6 @@ import { Provider } from 'react-redux'
 import { shallow, mount } from 'enzyme'
 import App from '../src/components/App'
 import AppScreen from '../src/containers/AppScreen'
-import state from './state-stub'
 
 const middlewares = [];
 const mockStore = configureMockStore(middlewares)({app: {isDisplayingSite: false}});

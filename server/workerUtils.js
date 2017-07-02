@@ -59,6 +59,7 @@ const fetchHTML = (url, site_id, task_id) => {
     })
   })
   .then((response, body) => {
+    //////TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.
     console.log('succ. fetch', response.statusCode, site_id, task_id)
     //TODO check status code:
     // if (data.statusCode === 200) {

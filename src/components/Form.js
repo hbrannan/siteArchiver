@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { requestUrl } from '../actions'
-import SpinWheel from './SpinWheel'
+import SpinWheel from '../containers/SpinWheel'
 
 class Form extends Component {
   constructor(props) {
@@ -14,31 +14,12 @@ class Form extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  //TODO: increase robustness of this function & also separate it out into : "static" ! part of class
-  vetUrl () {
-    //remove http://
-    var val = this.state.formValue.split('//');
-    if ( val.length > 1 ) {
-      val = val[1];
-    } else {
-      val = val[0];
-    }
-    //check for domain; if !exists, default: `.com`
-    const valSplitAtDot = val.split('.');
-    if (valSplitAtDot.length > 1) {
-      return val;
-    } else {
-      return `${val}.com`;
-    }
-  }
-
   handleSubmit (e) {
     e.preventDefault();
     const { dispatchUrlRequest } = this.props;
-    const vettedUrl = this.vetUrl();
+    const vettedUrl = Form.vetUrl(this.state.formValue);
     dispatchUrlRequest(vettedUrl);
-
-    // this.setState({formValue: ''}); // how to do this in react for inputs?
+    this.setState({formValue: ''});
   }
 
   handleChange (e){
@@ -51,12 +32,33 @@ class Form extends Component {
     return (
       <div className="form__container">
         <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleChange} placeholder="Search for a site"/>
+          <input value={this.state.formValue} onChange={this.handleChange} placeholder="Search for a site"/>
         </form>
         <div className="form__response">{responseMessage}</div>
         <div className="form__loading-dock"><SpinWheel /></div>
       </div>
     );
+  }
+
+  /*
+    TODO: increase fn robustness
+    Param, inputUrl = STRING
+    Remove http:// & /if !domainExists, add default ->  `.com`
+  */
+  static vetUrl (inputUrl) {
+    var val = inputUrl.split('//');
+    if ( val.length > 1 ) {
+      val = val[1];
+    } else {
+      val = val[0];
+    }
+
+    const valSplitAtDot = val.split('.');
+    if (valSplitAtDot.length > 1) {
+      return val;
+    } else {
+      return `${val}.com`;
+    }
   }
 }
 

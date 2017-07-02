@@ -43,14 +43,14 @@ app.get('/site', (req, res) => {
     } else if (site && site.html) {
       res.status(301).send({html: site.html});
     } else {
-      res.status(200).send({msg:'Check back soon! Archiving site!'});
+      res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
     }
     return shouldAddSite;
   })
   .then((shouldAddSite) => {
     if (shouldAddSite){
       utils.addNewSite(req.query.url)
-      .then(data => res.status(201).send({msg:'Check back soon! Archiving site!'}))
+      .then(site => res.status(201).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.siteId}`}))
       .catch(err => res.status(500).send({error: err}))
     }
   })
@@ -70,6 +70,9 @@ app.get('/top-sites', (req, res) => {
 
 });
 
+// app.get('/site', (req, res) => {
+  // req.query.id
+// })
 
 //https://github.com/matthew-andrews/isomorphic-fetch/issues/34
 // app.post('/site', (req, res) => {

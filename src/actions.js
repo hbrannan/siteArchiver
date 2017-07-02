@@ -33,10 +33,11 @@ function urlHTMLSuccess (html) {
 }
 
 export const URL_COMING_SOON = 'URL_COMING_SOON'
-function urlComingSoon (msgObj) {
+function urlComingSoon (msg) {
+  console.log('coming soon', msg)
   return {
     type: URL_COMING_SOON,
-    msgObj
+    msg
   }
 }
 
@@ -46,7 +47,6 @@ function urlFetchError (errObj) {
   return { type: URL_FETCH_FAILURE }
 }
 
-////TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.
 export function requestUrl (url) {
 
   return dispatch => {
@@ -106,25 +106,3 @@ function topFiveError (errObj) {
 export function backToMain () {
   return { type: 'BACK_TO_MAIN' }
 }
-
-
-/* todo: compare to blogs
-https://codepen.io/stowball/post/a-dummy-s-guide-to-redux-and-thunk-in-react
-http://redux.js.org/docs/advanced/AsyncActions.html
-example: https://github.com/matthew-andrews/isomorphic-fetch/issues/51
-*/
-  //if fetch, post -> invalid parameter issue: either index.js headers ||
-  //middleware use (of body-parser)
-  // here.. more likely one of the former
-  // fetch('http://localhost:3000/site', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: {
-  //       url: `${url}`
-  //     }
-  // })
-  // .then(response => console.log(response))
-  // .catch(err => console.log(err));
