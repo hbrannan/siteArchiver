@@ -9,19 +9,35 @@ import state from './state-stub'
 
 const middlewares = [];
 const mockStore = configureMockStore(middlewares)({app: {isDisplayingSite: false}});
-jest.mock('../src/containers/SiteDisplay', () => 'div className="site__container"')
-jest.mock('../src/components/SearchDisplay', () => 'div className="search__container"')
+jest.mock('../src/containers/SiteDisplay', () => 'SiteDisplay')
+jest.mock('../src/components/SearchDisplay', () => 'SearchDisplay')
+const enzymeAppMounted = mount(
+  <Provider store={mockStore}>
+    <AppScreen />
+  </Provider>
+);
 
-describe('App Screen', () => {
+describe('App Screen init', () => {
   it('should render', () => {
-    const wrapper = shallow(
-      <Provider store={mockStore}>
-        <AppScreen />
-      </Provider>
-    );
-    expect(wrapper.find(AppScreen).length).toEqual(1);
+    expect(enzymeAppMounted.find(AppScreen).length).toEqual(1);
   });
+  it('should init with isDisplayingSite as false', () => {
+    expect(enzymeAppMounted.props().isDisplayingSite).toBeFalsy();
+  });
+  it('should instantiate SearchDisplay', () => {
+    expect(enzymeAppMounted.find('SearchDisplay').length).toEqual(1);
+  });
+});
 
+describe('App Screen on site HTML', () => {
+  const component = mount(
+    <Provider store={configureMockStore(middlewares)({app: {isDisplayingSite: true}})}>
+      <AppScreen />
+    </Provider>
+  );
+  it('should instantiate SearchDisplay', () => {
+    expect(component.find('SiteDisplay').length).toEqual(1);
+  });
 });
 
 describe('App (Snapshot)', () => {
@@ -35,13 +51,11 @@ describe('App (Snapshot)', () => {
   });
 });
 
-
-/*
-
-Todo:
+/*  Todo:
 
   refactor: to use moduleNameMapper option and a stub file in Jest config
   (rather than current weback.test config & test env & plugin)
+
 *  *  *    https://github.com/facebook/jest/issues/870
   Jest config:
 
@@ -52,19 +66,4 @@ Todo:
 
   module.exports = {}; // Or other stub data for all SCSS modules.
 
-*  *  *
-  Resources
-  - Understanding a component’s contract: defines the expected behavior of your component and
-    what assumptions are reasonable to have about its usage
-      - What it renders  - props  - state held  - response to user interactions
-      - context rendered in  - side effects as a part of component lifecycle
-      - performance of methods called on instance  -
-
-  Test shouldn't need to exactly duplicate app.
-  Test shouldn't duplicate library code.
-  Trivial or important detail? Does this aspect affect the component's public API?
-
-  https://www.codementor.io/vijayst/unit-testing-react-components-jest-or-enzyme-du1087lh8
-  https://medium.freecodecamp.org/the-right-way-to-test-react-components-548a4736ab22
-  https://github.com/reactjs/redux/blob/master/docs/recipes/WritingTests.md
 */
