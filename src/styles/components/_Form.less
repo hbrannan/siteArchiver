@@ -1,16 +1,22 @@
 .form__container {
   margin: 0 auto;
-  width: 65%;
+  width: 100%;
   .flex-display(flex);
   .flex-direction(row);
   .flex-wrap(wrap);
   .justify-content(center);
 }
 
-form {
+.form__body {
   margin: 2rem auto 0.5rem;
   background: #e9e9e9;
   padding: 1rem;
+  @media (min-width: @tablet) {
+    width: 85%;
+  }
+  @media (min-width: @desktop) {
+    width: 55%;
+  }
   .box-shadow();
   .flex-display(flex);
   .flex-direction(row);
@@ -18,7 +24,18 @@ form {
   .justify-content(center);
 }
 
+.form__input {
+  margin: 2rem;
+  padding: .25rem;
+  width: 100%;
+  ::placeholder {
+    white-space: wrap;
+  }
+}
+
 .form__response {
+  text-align: center;
+  margin-top: 1em;
   width: 100%;
   height: 1.5rem;
 }

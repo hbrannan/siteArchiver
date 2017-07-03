@@ -3,11 +3,17 @@
   .flex-wrap(wrap);
   .justify-content(center);
 }
-
+.top-five__label {
+  text-align: center;
+  margin: 1em;
+}
 .frame__container {
   margin: .5rem;
-  .flex-basis(30%);
   .inline-block();
+
+  @media (min-width: @tablet) {
+    .flex-basis(30%);
+  }
 
   iframe {
     width: 100%;

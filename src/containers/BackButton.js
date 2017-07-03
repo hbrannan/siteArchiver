@@ -5,7 +5,7 @@ import { backToMain } from '../actions'
 
 let BackButton = ({dispatch}) => {
   return (
-    <div className="backButton" onClick={ () => { dispatch(backToMain())} }> ◀  B A C K   T O   M A I N </div>
+    <div className="backButton" onClick={ () => { dispatch(backToMain())} }> ◀  B A C K &nbsp; T O &nbsp; M A I N </div>
   );
 }
 

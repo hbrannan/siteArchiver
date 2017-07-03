@@ -1,8 +1,8 @@
-const express = require('express');
-const app = express();
-const utils = require('./utils');
-const workerJobs = require('./workers');
-const { getTopFiveSites } = require('./workerUtils');
+const express = require('express')
+const app = express()
+const utils = require('./utils')
+const workerJobs = require('./workers')
+const { getTopFiveSites } = require('./workerUtils')
 
 //middleware
 const path = require('path');
@@ -10,27 +10,28 @@ const bodyParser = require('body-parser');
 
 //Customize cors middleware
 const allowCrossDomain = (req, res, next) => {
-  res.header('access-control-allow-origin', '*');
-  res.header('access-control-allow-method', '*');
-  res.header('access-control-allow-headers', 'Content-Type');
-  res.header('Content-Type','application/json');
+  res.header('access-control-allow-origin', '*')
+  res.header('access-control-allow-method', '*')
+  res.header('access-control-allow-headers', 'Content-Type')
+  res.header('Content-Type','application/json')
   if (req.method == 'OPTIONS') {
-    res.status(200).send(200);
+    res.status(200).send(200)
   } else {
-    next();
+    next()
   }
 };
 
-app.use(allowCrossDomain);
-app.use(bodyParser.json());
-app.use(express.static(path.resolve(__dirname + '/../client')));
+app.use(allowCrossDomain)
+app.use(bodyParser.json())
+app.use(express.static(path.resolve(__dirname + '/../client')))
 
 //R O U T E S
 
 app.get('/', (req, res) => {
-  res.status(200).sendFile(path.resolve(__dirname + '/../client/index.html'));
-});
+  res.status(200).sendFile(path.resolve(__dirname + '/../client/index.html'))
+})
 
+//Should include .domin
 app.post('/site', (req, res) => {
   if(req.body.url){
     utils.checkForSite(req.body.url)
@@ -56,11 +57,11 @@ app.post('/site', (req, res) => {
   } else {
     res.status(400).send({msg:'Bad request'});
   }
-});
+})
 
 app.get('/site', (req, res) => {
   if (req.query.id) {
-    utils.checkForSiteAsTask(req.query.id)
+    utils.checkForSiteById(req.query.id)
     .then((site) => {
       if (site && site.html) {
         res.status(200).send({html: site.html});
@@ -79,11 +80,11 @@ app.get('/site', (req, res) => {
 app.get('/top-sites', (req, res) => {
   getTopFiveSites()
   .then(sites => {
-    sites.forEach(site => console.log(site.url, site.hitCount))
+    sites.forEach(site => console.log(site.url, site.hits))
     res.status(200).send({ sites: sites });
   })
-  .catch ( err => res.status(500).send({error: err}) );
+  .catch (err => res.status(500).send({error: err}))
 
-});
+})
 
-module.exports = app;
+module.exports = app

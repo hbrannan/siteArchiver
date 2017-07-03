@@ -1,10 +1,9 @@
 ## DESCRIPTION:
-  Web Scraper & Archiver with SearchView (using HTML5 iFrames), DisplayView, and top 5 most-hit-sites display.
-  -React/Redux - HTML5 iframes -Node/Express API -cron regulated workers -and Sequelize + sql db.
+  Web Scraper & Archiver with SearchView (using iFrames), SiteView, and Top 5 Most Hit display.
+  -React/Redux -Node/Express API -Cron regulated workers -and Sequelize + (dev) sqlite db.
 
 ## TODOS:
  - add styles
- - escape html at fetch, and store escaped in db
  - improve testing coverage
 
 ## RUN:
@@ -29,19 +28,35 @@ Queue: (hasOne : Site)
   - site_id
 
 ## API:
+
   post /site, takes url:STRING
-  get /site, takes id:INT, strings of numbers acceptable.
+     - if calling the API directly, note:
+     - API currently supports only http://
+                     supports only one site at a time
+                     expects Content-Type of application/json
+     - url string should NOT itself include http://
+     - url string SHOULD include a .domain
+    example: google.com
+
+  get /site, takes id:INT, a stringified number is acceptable.
+     - API currently supports only query id at a time
+    example: 1
+    example: '1'
+
   get /top-sites
+     - no params
+     - returns an array of html string of the top 5 most hit sites
 
 
 ## STRETCH ideas:
  - not found -> did you mean... ? (google search API integration)
  - top five error message display, in event should occur
- - improve 401/402/403s: message instead of <hmtl: not available>
+ - improve 3*4*: status code messages instead of providing <hmtl: not available>
  - trap errors occurring within iFrames (from data scripts)
  - return-to-site-display button
  - copy job_id to (cached) clipboard
  - webhook for topFiveUpdate
+ - react router for browser history
  - action types file
  - update sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
  - site categories

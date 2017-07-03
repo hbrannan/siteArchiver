@@ -54,6 +54,7 @@ const fetchURL = (site_id, task_id) => {
 const fetchHTML = (url, site_id, task_id) => {
   const defaultHtml = encodeURI('<html><body><div>Requested site unavailable.</div></body></html>')
   url = `http://${url}`
+  const strTest = '<script>console.log=function(){};</script>'
   return new Promise ((resolve, reject) => {
     return request({
       url: url,
@@ -68,7 +69,8 @@ const fetchHTML = (url, site_id, task_id) => {
       })
   })
   .then((response, body) => {
-    return response.statusCode === 200 ? addHtml(defaultHtml, site_id, task_id) : addHtml(response.body, site_id, task_id)
+    console.log('r e s p o n s e   o f  h t m l', response.statusCode)
+    return response.statusCode === 200 ? addHtml(`${strTest} ${response.body}`, site_id, task_id) : addHtml(defaultHtml, site_id, task_id)
   })
   .catch( err => addHtml(defaultHtml, site_id, task_id) );
 };
@@ -114,6 +116,9 @@ const shiftOffQueue = (task_id) => {
 
 
 //Retrieve Top 5-hit Sites
+//params: n/a
+//succ: -> return Array[<Obj>] with .url[STRING], .html[STRING], .hits[INT]
+//fail: return error
 exports.getTopFiveSites = () => {
   return db.Site.findAll({
     limit: 5,
