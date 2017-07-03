@@ -29,6 +29,5 @@ sequelize.sync();
 
 module.exports = {
   Site: Site,
-  Task: Task,
   sequelize: sequelize
 };
