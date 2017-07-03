@@ -1,4 +1,6 @@
 const db = require('../database/connection');
+const request = require('request')
+const queuePath = `http://localhost:${process.env.JOB_PORT}`
 
 //Check DB for Site given
 //params: id(INT)
@@ -48,12 +50,29 @@ const addNewSite = (targetUrl) => {
 //succ: -> return site_id
 //fail: return err
 const addNewTask = (site_id) => {
-  return db.Task.create()
-  .then((task) => {
-    return task.setSite(site_id)
+  const body = JSON.stringify({siteId: site_id})
+
+  return new Promise ((resolve, reject) => {
+    return request({
+      url: `${queuePath}/task`,
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: body,
+      timeout: 5000
+      }, function (error, response) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      })
   })
-  .then(tasksList => {
-    return site_id;
+  .then(res => {
+    const site = JSON.parse(res.body)
+    return site.siteId
   })
   .catch((err) => err);
 };

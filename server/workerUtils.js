@@ -1,5 +1,6 @@
-const request = require('request');
-const db = require('../database/connection');
+const request = require('request')
+const db = require('../database/connection')
+const queuePath = `http://localhost:${process.env.JOB_PORT}`
 
 /*  T. O. C
 
@@ -16,19 +17,27 @@ const db = require('../database/connection');
 
 //Fetch the id(INT) and siteId(INT) from the taskQueue
 //params: n/a
-//succ: -> fetchURL()  || noTaskExists -> return {task: null}
+//succ: -> fetchURL(siteId, taskId)  || noTaskExists -> return {task: null}
 //fail: return error
 exports.pullFromQueue = () => {
-  return db.Task.findOne({
-    attributes: [
-      [db.sequelize.fn('min', db.sequelize.col('id')), 'id'],
-      [db.sequelize.fn('min', db.sequelize.col('id')), 'siteId'],
-    ]
+  return new Promise ((resolve, reject) => {
+    return request({
+      url: `${queuePath}/task`,
+      method: 'GET',
+      timeout: 5000
+      }, function (error, response) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      })
   })
-  .then((task) => {
-    return task.id ? fetchURL(task.siteId, task.id) : { task: null };
+  .then(res => {
+    const task = JSON.parse(res.body)
+    return task.siteId ? fetchURL(task.siteId, task.id) : { task: null };
   })
-  .catch((err) =>  err);
+  .catch((err) => err);
 };
 
 //Retrieve URL to fetch HTML
@@ -41,9 +50,7 @@ const fetchURL = (site_id, task_id) => {
       id: site_id
     }
   })
-  .then((siteInQueue) => {
-    return fetchHTML(siteInQueue.url, site_id, task_id)
-  })
+  .then((siteInQueue) => fetchHTML(siteInQueue.url, site_id, task_id))
   .catch(err => err)
 };
 
@@ -55,6 +62,7 @@ const fetchHTML = (url, site_id, task_id) => {
   const defaultHtml = encodeURI('<html><body><div>Requested site unavailable.</div></body></html>')
   url = `http://${url}`
   const strTest = '<script>console.log=function(){};</script>'
+
   return new Promise ((resolve, reject) => {
     return request({
       url: url,
@@ -69,7 +77,6 @@ const fetchHTML = (url, site_id, task_id) => {
       })
   })
   .then((response, body) => {
-    console.log('r e s p o n s e   o f  h t m l', response.statusCode)
     return response.statusCode === 200 ? addHtml(`${strTest} ${response.body}`, site_id, task_id) : addHtml(defaultHtml, site_id, task_id)
   })
   .catch( err => addHtml(defaultHtml, site_id, task_id) );
@@ -99,14 +106,29 @@ const addHtml = (html, site_id, task_id) => {
 //succ: -> destroyTaskInstance.then(return corresponding siteId)
 //fail: return err, (retry later)
 const shiftOffQueue = (task_id) => {
-  return db.Task.findOne({
-      where: {
-        id : task_id
-      }
+  const body = JSON.stringify({task_id: task_id})
+
+  return new Promise ((resolve, reject) => {
+    return request({
+      url: `${queuePath}/task`,
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: body,
+      timeout: 5000
+      }, function (error, response) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      })
   })
-  .then((task) => task.destroy())
-  .then(deletedTask => {
-    return deletedTask.siteId;
+  .then(res => {
+    const deletedTask = JSON.parse(res.body);
+    return deletedTask.siteId
   })
   .catch(err => err);
 };
@@ -131,8 +153,5 @@ exports.getTopFiveSites = () => {
     sites.forEach((site)=> { html.push({url: site.url, html: site.html, hits: site.hitCount}) });
     return html;
   })
-  .catch(err => {
-    console.log('err is', err)
-    return err
-  });
+  .catch(err => err);
 };
