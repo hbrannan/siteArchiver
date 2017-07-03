@@ -1,7 +1,7 @@
 const request = require('request');
 const db = require('../database/connection');
 
-/*T. O. C
+/*  T. O. C
 
  *Handle HTML Fetch Queue
     -pullFromQueue
@@ -14,8 +14,10 @@ const db = require('../database/connection');
 
 */
 
-//Fetch the id and siteId from the taskQueue -> fetchURL()
-//If no site remains in TaskQueue, return out with msg {task: null}
+//Fetch the id(INT) and siteId(INT) from the taskQueue
+//params: n/a
+//succ: -> fetchURL()  || noTaskExists -> return {task: null}
+//fail: return error
 exports.pullFromQueue = () => {
   return db.Task.findOne({
     attributes: [
@@ -29,7 +31,10 @@ exports.pullFromQueue = () => {
   .catch((err) =>  err);
 };
 
-//Given target site_id, return site url -> fetchHTML()
+//Retrieve URL to fetch HTML
+//params: target site_id (INT.req), task_id(INT.req)
+//succ: -> fetchHTML(site_id, task_id)
+//fail: return error
 const fetchURL = (site_id, task_id) => {
   return db.Site.findOne({
     where: {
@@ -42,7 +47,10 @@ const fetchURL = (site_id, task_id) => {
   .catch(err => err)
 };
 
-//fetch HTML -> addHTML()
+//Retrieve HTML, handle _all_ possible returns
+//params: url(STRING.req), target site_id(INT.req), task_id(INT.req)
+//succ: -> 200 addHTML(retrievedHTML site_id, task_id) || addHTML(defaultHTML, site_id, task_id)
+//fail: addHTML(defaultHTML, site_id, task_id)
 const fetchHTML = (url, site_id, task_id) => {
   const defaultHtml = encodeURI('<html><body><div>Requested site unavailable.</div></body></html>')
   url = `http://${url}`
@@ -65,7 +73,10 @@ const fetchHTML = (url, site_id, task_id) => {
   .catch( err => addHtml(defaultHtml, site_id, task_id) );
 };
 
-//Add the html value to the Site -> shiftOffQueue()
+//Add HTML to site instance
+//params: html(STRING.req), target site_id(INT.req), task_id(INT.req)
+//succ: -> updateSite.then(shiftOffQueu(task_id))
+//fail: return err, STOP (retry later)
 const addHtml = (html, site_id, task_id) => {
   return db.Site.findOne({
     where: {
@@ -81,7 +92,10 @@ const addHtml = (html, site_id, task_id) => {
   .catch(err => err);
 };
 
-//Delete Task from TaskQueue
+//Shift task off of queue
+//params: task_id(INT.req)
+//succ: -> destroyTaskInstance.then(return corresponding siteId)
+//fail: return err, (retry later)
 const shiftOffQueue = (task_id) => {
   return db.Task.findOne({
       where: {
@@ -92,7 +106,7 @@ const shiftOffQueue = (task_id) => {
   .then(deletedTask => {
     return deletedTask.siteId;
   })
-  .catch(err => {console.log('destruction err'); return err});
+  .catch(err => err);
 };
 
 

@@ -56,7 +56,7 @@ class Form extends Component {
       } else {
         val = val[0];
       }
-
+      val = val.split(' ').join('')
       const valSplitAtDot = val.split('.');
       if (valSplitAtDot.length > 1) {
         return val;

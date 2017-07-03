@@ -35,6 +35,7 @@ Queue: (hasOne : Site)
 
 
 ## STRETCH ideas:
+ - not found -> did you mean... ? (google search API integration)
  - top five error message display, in event should occur
  - improve 401/402/403s: message instead of <hmtl: not available>
  - trap errors occurring within iFrames (from data scripts)
