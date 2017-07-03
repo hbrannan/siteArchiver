@@ -1,5 +1,18 @@
 {
   presets: [
     "es2015", "react", 'stage-2'
-  ]
+  ],
+  env: {
+    test: {
+      plugins: [
+        [
+          "babel-plugin-webpack-loaders",
+          {
+            "config": "./webpack.test.config.js",
+            "verbose": false
+          }
+        ]
+      ]
+    }
+  }
 }

@@ -28,7 +28,7 @@ Update Top Five
 
 /*     *     *     *     *     *     *     *     *     *     *     *     */
 
-exports.archiveSites = new Job('5 * * * * *', function() {
+exports.archiveSites = new Job('05 * * * * *', function() {
   return workerUtils.pullFromQueue();
 }, null, true, 'America/Los_Angeles');
 

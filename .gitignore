@@ -1,3 +1,5 @@
 database.sqlite
+databaseTest.sqlite
 node_modules
-.env
+npm-debug.log
+.env*

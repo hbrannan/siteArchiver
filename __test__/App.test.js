@@ -1,41 +1,68 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
-import { shallow } from 'enzyme';
-import configureMockStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import App from '../src/components/App';
+import React from 'react'
+import renderer from 'react-test-renderer'
+import configureMockStore from 'redux-mock-store'
+import { Provider } from 'react-redux'
+import { shallow, mount } from 'enzyme'
+import App from '../src/components/App'
+import AppScreen from '../src/containers/AppScreen'
 
 const middlewares = [];
-const state = [];
-const mockStore = configureMockStore(middlewares)([]);
+const mockStore = configureMockStore(middlewares)({app: {isDisplayingSite: false}});
+jest.mock('../src/containers/SiteDisplay', () => 'SiteDisplay')
+jest.mock('../src/components/SearchDisplay', () => 'SearchDisplay')
+const enzymeAppMounted = mount(
+  <Provider store={mockStore}>
+    <AppScreen />
+  </Provider>
+);
+
+describe('App Screen init', () => {
+  it('should render', () => {
+    expect(enzymeAppMounted.find(AppScreen).length).toEqual(1);
+  });
+  it('should init with isDisplayingSite as false', () => {
+    expect(enzymeAppMounted.props().isDisplayingSite).toBeFalsy();
+  });
+  it('should instantiate SearchDisplay', () => {
+    expect(enzymeAppMounted.find('SearchDisplay').length).toEqual(1);
+  });
+});
+
+describe('App Screen on site HTML', () => {
+  const component = mount(
+    <Provider store={configureMockStore(middlewares)({app: {isDisplayingSite: true}})}>
+      <AppScreen />
+    </Provider>
+  );
+  it('should instantiate SearchDisplay', () => {
+    expect(component.find('SiteDisplay').length).toEqual(1);
+  });
+});
 
 describe('App (Snapshot)', () => {
   it('consistently renders the App shell', () => {
-    const component = renderer.create(<Provider store={mockStore}><App /></Provider>);
-    const json = component.toJSON();
-    expect(json).toMatchSnapshot();
-  });
+    const component = renderer.create(
+      <Provider store={mockStore}>
+        <AppScreen />
+      </Provider>).toJSON();
 
-  it('Welcome renders hello world', () => {
-    const app = shallow(<App />);
-    expect(app.find('h1').text()).toEqual('Web Crawler');
+    expect(component).toMatchSnapshot();
   });
-
 });
 
-/*
-  Resources
-  - Understanding a component’s contract: defines the expected behavior of your component and
-    what assumptions are reasonable to have about its usage
-      - What it renders  - props  - state held  - response to user interactions
-      - context rendered in  - side effects as a part of component lifecycle
-      - performance of methods called on instance  -
+/*  Todo:
 
-  Test shouldn't need to exactly duplicate app.
-  Test shouldn't duplicate library code.
-  Trivial or important detail? Does this aspect affect the component's public API?
+  refactor: to use moduleNameMapper option and a stub file in Jest config
+  (rather than current weback.test config & test env & plugin)
 
-  https://www.codementor.io/vijayst/unit-testing-react-components-jest-or-enzyme-du1087lh8
-  https://medium.freecodecamp.org/the-right-way-to-test-react-components-548a4736ab22
-  https://github.com/reactjs/redux/blob/master/docs/recipes/WritingTests.md
+*  *  *    https://github.com/facebook/jest/issues/870
+  Jest config:
+
+  "moduleNameMapper": {
+    "\.scss$": "path/to/SCSSStub.js"
+  }
+  SCSSStub.js:
+
+  module.exports = {}; // Or other stub data for all SCSS modules.
+
 */

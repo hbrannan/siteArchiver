@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { requestUrl } from '../actions'
+import { requestUrl, requestSiteById } from '../actions'
 import Form from '../components/Form';
 
 const mapStateToProps = state => ({
@@ -8,8 +8,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dispatchUrlRequest: url => {
-    dispatch(requestUrl(url))
+  dispatchUrlRequest: id_or_url => {
+    if (isNaN(id_or_url)){
+      dispatch(requestUrl(id_or_url))
+    } else {
+      dispatch(requestSiteById(id_or_url))
+    }
   }
 });
 

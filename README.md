@@ -2,18 +2,10 @@
   Web Scraper & Archiver with SearchView (using HTML5 iFrames), DisplayView, and top 5 most-hit-sites display.
   -React/Redux - HTML5 iframes -Node/Express API -cron regulated workers -and Sequelize + sql db.
 
-  Note: turns out Bill Nye The Science Guy's website is a.m.a.z.i.n.g!
-
 ## TODOS:
  - add styles
- - clear form value
- - map state to props through getState
- - refactor post
  - escape html at fetch, and store escaped in db
- - topFive error message display
- - webhook for topFiveUpdate incl. if error, keep what's there.
  - improve testing coverage
- - clean actions.js
 
 ## RUN:
  - client: ``yarn start``
@@ -37,13 +29,20 @@ Queue: (hasOne : Site)
   - site_id
 
 ## API:
-  post /site
+  post /site, takes url:STRING
+  get /site, takes id:INT, strings of numbers acceptable.
   get /top-sites
 
 
 ## STRETCH ideas:
- - top 5 display (mini-screenshot)
+ - top five error message display, in event should occur
+ - improve 401/402/403s: message instead of <hmtl: not available>
+ - trap errors occurring within iFrames (from data scripts)
+ - return-to-site-display button
+ - copy job_id to (cached) clipboard
+ - webhook for topFiveUpdate
+ - action types file
  - update sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
  - site categories
  - cache user-sites in browser
- - users have own top sites, which would override general top 5
+ - users, w own top sites factoring in to top5 display, & my_recent_sites

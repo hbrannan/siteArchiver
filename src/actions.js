@@ -8,6 +8,8 @@ const serverPath = 'http://localhost:3000';
       - HTML_FETCH_SUCCESS
       - URL_COMING_SOON
       - URL_FETCH_FAILURE
+  requestSiteById
+      -> feeds into requestUrl flow
   requestTopFive
       - REQUESTING_TOP_Five
       - TOP_FIVE_SUCCESS
@@ -17,11 +19,8 @@ const serverPath = 'http://localhost:3000';
 */
 
 export const REQUESTING_URL = 'REQUESTING_URL'
-function requestingUrl (url) {
-  return {
-    type: REQUESTING_URL,
-    url
-  }
+function requestingUrl () {
+  return { type: REQUESTING_URL }
 }
 
 export const HTML_FETCH_SUCCESS = 'HTML_FETCH_SUCCESS'
@@ -33,36 +32,59 @@ function urlHTMLSuccess (html) {
 }
 
 export const URL_COMING_SOON = 'URL_COMING_SOON'
-function urlComingSoon (msgObj) {
+function urlComingSoon (msg) {
+  console.log('coming soon', msg)
   return {
     type: URL_COMING_SOON,
-    msgObj
+    msg
   }
 }
 
 export const URL_FETCH_FAILURE = 'URL_FETCH_FAILURE'
 function urlFetchError (errObj) {
-  return {
-    type: URL_FETCH_FAILURE,
-    errObj
-  }
+  console.log('Server error has occurred:', errObj)
+  return { type: URL_FETCH_FAILURE }
 }
 
 export function requestUrl (url) {
 
   return dispatch => {
 
-    dispatch(requestingUrl(url))
+    dispatch(requestingUrl())
 
-    return fetch(`${serverPath}/site?url=${url}`)
+    const body = JSON.stringify({url: `${url}`})
+    return fetch(`${serverPath}/site`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: body
+    })
     .then(
       response => response.json(),
-      error => {console.log('An error occured.', error); dispatch(urlFetchError(error)) }// need to dispatch the error
+      error => dispatch(urlFetchError(error))
     )
     .then(res => {
-      console.log('R E S U L T   I S ', res)
-      if (res.html) dispatch(urlHTMLSuccess(res.html))
-      else dispatch(urlComingSoon(res.msg))
+      if (res && res.html) dispatch(urlHTMLSuccess(res.html))
+      else if (res.msg) dispatch(urlComingSoon(res.msg))
+    })
+  }
+}
+
+export function requestSiteById (id) {
+  return dispatch => {
+
+    dispatch(requestingUrl())
+
+    return fetch(`${serverPath}/site?id=${id}`)
+    .then(
+      response => response.json(),
+      error => dispatch(urlFetchError(error))
+    )
+    .then(res => {
+      if (res && res.html) dispatch(urlHTMLSuccess(res.html))
+      else if (res.msg) dispatch(urlComingSoon(res.msg))
     })
   }
 }
@@ -108,25 +130,3 @@ function topFiveError (errObj) {
 export function backToMain () {
   return { type: 'BACK_TO_MAIN' }
 }
-
-
-/* todo: compare to blogs
-https://codepen.io/stowball/post/a-dummy-s-guide-to-redux-and-thunk-in-react
-http://redux.js.org/docs/advanced/AsyncActions.html
-example: https://github.com/matthew-andrews/isomorphic-fetch/issues/51
-*/
-  //if fetch, post -> invalid parameter issue: either index.js headers ||
-  //middleware use (of body-parser)
-  // here.. more likely one of the former
-  // fetch('http://localhost:3000/site', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: {
-  //       url: `${url}`
-  //     }
-  // })
-  // .then(response => console.log(response))
-  // .catch(err => console.log(err));

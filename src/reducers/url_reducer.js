@@ -9,7 +9,7 @@ const url = (state={isFetching: false, response_message:''}, action) => {
     case 'URL_COMING_SOON':
       return {
         ...state,
-        response_message: 'We\'re fetching site content! Please check back again soon.',
+        response_message: action.msg,
         isFetching: false
       }
     case 'URL_FETCH_FAILURE':

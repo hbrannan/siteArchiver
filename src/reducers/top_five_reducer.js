@@ -16,7 +16,8 @@ const top_five = (state={isFetching: false, topFive: [], response_message: ''}, 
       return {
         ...state,
         isFetching: false,
-        topFive: action.sites.filter((obj) => obj.html !== null).map((obj) => obj.html)
+        topFive: action.sites.filter((obj) => obj.html !== null).map((obj) => obj.html),
+        response_message: ''
       }
     default :
       return state;

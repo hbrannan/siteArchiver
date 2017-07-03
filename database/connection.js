@@ -1,11 +1,11 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('sites_archive', 'usr', 'pwd', {
+const env = process.env.NODE_ENV ? require('dotenv').config({path: '.env.test'}) : require('dotenv').config();
+
+const sequelize = new Sequelize(process.env.DB_NAME, 'usr', 'pwd', {
   dialect: 'sqlite',
   host: 'localhost',
-  storage: './database.sqlite'
+  storage: process.env.DB_STORAGE
 });
-
-console.log(' L O A D E D   D B');
 
 const Site = sequelize.define('sites', {
   id: {
@@ -35,18 +35,17 @@ const Task = sequelize.define('tasks', {
 
 Task.belongsTo(Site);
 
-
 sequelize.sync();
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 //FOR DEV
 // sequelize.drop();
-
-//FOR DEV
-// sequelize.authenticate().then(() => {
-//   console.log('db connection authenticated');
-// })
-// .catch((err) => {
-//   console.error('unable to connect', err)
-// });
 
 module.exports = {
   Site: Site,
