@@ -9,6 +9,11 @@ describe('API', () => {
     request
       .get('/top-sites')
       .expect(200)
+      .expect(res => {
+        if (!res.body.sites.length === 5){
+          throw new Error('should return 5 sites')
+        }
+      })
       .end(function (err, res) {
         done();
       });
@@ -38,6 +43,11 @@ describe('API', () => {
     request
     .get('/site?id=1')
     .expect(200)
+    .expect (res => {
+      if (!res.body.html){
+        throw new Error('must contain html when provided completed id')
+      }
+    })
     .end((err, res) => {
       if (err) return done(err)
       done()
@@ -48,6 +58,9 @@ describe('API', () => {
     request
     .get('/site?id=10000000')
     .expect(200)
+    .expect({
+      msg:'We have no site with archive_job_id 10000000. Perhaps try resubmitting the site name.'
+    })
     .end((err, res) => {
       if (err) return done(err)
       done()

@@ -16,7 +16,7 @@ function initDB () {
     return task.setSite(1)
   })
   .catch((err) => {
-    console.log('e r r o r  in initTestDB!!')
+    console.log('e r r o r  in initTestDB!!', err)
     return err
   });
 }

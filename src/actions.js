@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
-const serverPath = 'http://localhost:3000';
+const port = process.env.PORT || 3000;
+const serverPath = `http://localhost:${port}`;
 
 /*
  T O C
@@ -98,7 +99,6 @@ export function requestTopFive () {
       error => dispatch(topFiveError(error))
     )
     .then(result => {
-      console.log(result)
       if (result.sites) {
         dispatch(topFiveSuccess(result.sites))
       }

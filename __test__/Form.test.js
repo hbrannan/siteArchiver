@@ -8,7 +8,8 @@ import thunk from 'redux-thunk'
 import { requestUrl } from '../src/actions'
 import FormContainer from '../src/containers/Form'
 import Form from '../src/components/Form'
-const serverPath = 'http://localhost:3001'
+const port = process.env.PORT || 3000;
+const serverPath = `http://localhost:${port}`
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -31,11 +32,13 @@ describe('async form actions', () => {
 
   it('triggers html display action when site has html', () => {
     nock(`${serverPath}`)
-      .get('/site?url=google.com')
+      .post('/site', {
+        url:'google.com'
+      })
       .reply(200, { html: 'dummyHTML' })
 
     const expectedSuccessActions = [
-      { type: 'REQUESTING_URL', 'url': 'google.com'},
+      { type: 'REQUESTING_URL' },
       { type: 'HTML_FETCH_SUCCESS', 'html': 'dummyHTML' }
     ]
 
@@ -46,12 +49,14 @@ describe('async form actions', () => {
 
   it('triggers coming soon actions when a site is awaiting html', () => {
     nock(`${serverPath}`)
-      .get('/site?url=marlamaples.com')
+      .post('/site', {
+        url: 'marlamaples.com'
+      })
       .reply(200, { msg: 'dummyMSG' })
 
     const expectedAwaitActions = [
-      { type: 'REQUESTING_URL', 'url': 'marlamaples.com'},
-      { type: 'URL_COMING_SOON', 'msgObj': 'dummyMSG' }
+      { type: 'REQUESTING_URL' },
+      { type: 'URL_COMING_SOON', 'msg': 'dummyMSG' }
     ]
 
     return store.dispatch(requestUrl('marlamaples.com')).then(() => {
@@ -61,11 +66,13 @@ describe('async form actions', () => {
 
   it('creates URL_FETCH_FAILURE on a bad request', () => {
     nock(`${serverPath}`)
-      .get('/site?url=notReal.com')
+      .post('/site', {
+        url: 'notReal.com'
+      })
       .replyWithError('serverError');
 
     const expectedErrorActions = [
-      { type: 'REQUESTING_URL', 'url': 'notReal.com'},
+      { type: 'REQUESTING_URL' },
       { type: 'URL_FETCH_FAILURE'}
     ]
 

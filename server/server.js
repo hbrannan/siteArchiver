@@ -103,7 +103,6 @@ app.get('/site', (req, res) => {
 app.get('/top-sites', (req, res) => {
   getTopFiveSites()
   .then(sites => {
-    sites.forEach(site => console.log(site.url, site.hits))
     res.status(200).send({ sites: sites });
   })
   .catch (err => res.status(500).send({error: err}))
