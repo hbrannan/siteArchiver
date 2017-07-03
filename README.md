@@ -10,8 +10,8 @@
     - is called via cron job API tasks
     - (if any) handles earliest task
     - (upon confirmed html-add) deletes task from queue
-  -Sqlite DBs with Sequelize ORM
-  -Testing:
+  - Sqlite DBs with Sequelize ORM
+  - Testing:
     - Front end: Jest & Enzyme, Nock & Thunk
     - Server: Mocha, Chai, and Supertest
 
@@ -28,7 +28,7 @@
  - API + JobQueue: ```yarn test:queue``` && ```yarn test:server```
 
 ## DB TABLE:
-Sites:
+Site:
   - id
   - url
   - htmlContent
@@ -37,13 +37,13 @@ Sites:
 
 
 ## QUEUE TABLE:
-Queue: (hasOne : Site)
+Task:
   - id
   - siteId
 
 ## Client-Facing API:
 
-  post /site, takes url:STRING
+  - post /site, takes url:STRING
     if calling the API directly, note:
      - API currently requests only to http://
                      supports only one site at a time
@@ -54,12 +54,12 @@ Queue: (hasOne : Site)
     if using the webage, not:
      - if no domain is provided, defaults to `.com`
 
-  get /site, takes id:INT, a stringified number is acceptable.
+  - get /site, takes id:INT, a stringified number is acceptable.
      - API currently supports only query id at a time
     example: 1
     example: '1'
 
-  get /top-sites
+  - get /top-sites
      - no params
      - returns an array of html string of the top 5 most hit sites
 
