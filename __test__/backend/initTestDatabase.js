@@ -1,4 +1,4 @@
-const db = require('../database/connection');
+const db = require('../../database/connection');
 
 function initDB () {
   return db.Site.bulkCreate([

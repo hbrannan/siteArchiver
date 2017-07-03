@@ -8,7 +8,7 @@ import thunk from 'redux-thunk'
 import { requestUrl } from '../src/actions'
 import FormContainer from '../src/containers/Form'
 import Form from '../src/components/Form'
-const serverPath = 'http://localhost:3000'
+const serverPath = 'http://localhost:3001'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

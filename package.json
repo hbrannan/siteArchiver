@@ -8,8 +8,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "test": "BABEL_DISABLE_CACHE=1 NODE_ENV=test jest",
-    "test:watch": "npm test -- --watch",
-    "test:server": "NODE_ENV=test mocha test"
+    "test:server": "NODE_ENV=test mocha __test__/backend"
   },
   "dependencies": {
     "babel-plugin-webpack-loaders": "^0.9.0",

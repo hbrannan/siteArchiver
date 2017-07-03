@@ -1,8 +1,7 @@
-// const expect = require('chai').expect
 const supertest = require('supertest')
-const app = require('../server/server.js')
+const app = require('../../server/server.js')
 const request =  supertest(app);
-const db = require('../database/connection');
+const db = require('../../database/connection');
 
 describe('API', () => {
 

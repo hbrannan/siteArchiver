@@ -30,13 +30,15 @@ Queue: (hasOne : Site)
 ## API:
 
   post /site, takes url:STRING
-     - if calling the API directly, note:
-     - API currently supports only http://
+    if calling the API directly, note:
+     - API currently requests only to http://
                      supports only one site at a time
                      expects Content-Type of application/json
      - url string should NOT itself include http://
      - url string SHOULD include a .domain
-    example: google.com
+     example: google.com
+    if using the webage, not:
+     - if no domain is provided, defaults to `.com`
 
   get /site, takes id:INT, a stringified number is acceptable.
      - API currently supports only query id at a time
