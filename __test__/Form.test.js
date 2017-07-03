@@ -13,7 +13,8 @@ const serverPath = `http://localhost:${port}`
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
-const mokStor = mockStore({url: { isFetching: true, response_message:'', dispatchUrlRequest: jest.fn()} })
+const dispatchMock = jest.fn()
+const mokStor = mockStore({url: { isFetching: true, response_message:'', dispatchUrlRequest: new dispatchMock} })
 jest.mock('../src/containers/SpinWheel', () => 'SpinWheel')
 const enzymeForm = mount(
   <Provider store={mokStor}>
@@ -92,17 +93,9 @@ describe('component props', () => {
   });
 })
 
-describe('form submission', () => {
-  //TODO
-})
-
 /*
 
 Testing TODOS:
 - displays response message if exists
-- handleChange & handle submit event handlers
+- event handlers
 */
-
-
-//TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.
-//https://github.com/reactjs/redux/blob/master/docs/recipes/WritingTests.md
