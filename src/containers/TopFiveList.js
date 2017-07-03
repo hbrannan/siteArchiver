@@ -15,12 +15,15 @@ class TopFiveList extends Component {
 
   render ()  {
     return (
-      <div className="top-five__container">
-        {
-          this.props.topFive.map((html, rank) => {
-            return <div className="frame__container" key={rank}><SiteFrame site={html} /></div>
-          })
-        }
+      <div>
+        <div className="top-five__label">Check out our Top Searched Sites</div>
+        <div className="top-five__container">
+          {
+            this.props.topFive.map((html, rank) => {
+              return <div className="frame__container" key={rank}><SiteFrame site={html} /></div>
+            })
+          }
+        </div>
       </div>
     );
   }

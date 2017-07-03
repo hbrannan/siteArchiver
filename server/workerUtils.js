@@ -1,7 +1,7 @@
 const request = require('request');
 const db = require('../database/connection');
 
-/*T. O. C
+/*  T. O. C
 
  *Handle HTML Fetch Queue
     -pullFromQueue
@@ -14,8 +14,10 @@ const db = require('../database/connection');
 
 */
 
-//Fetch the id and siteId from the taskQueue -> fetchURL()
-//If no site remains in TaskQueue, return out with msg {task: null}
+//Fetch the id(INT) and siteId(INT) from the taskQueue
+//params: n/a
+//succ: -> fetchURL()  || noTaskExists -> return {task: null}
+//fail: return error
 exports.pullFromQueue = () => {
   return db.Task.findOne({
     attributes: [
@@ -29,7 +31,10 @@ exports.pullFromQueue = () => {
   .catch((err) =>  err);
 };
 
-//Given target site_id, return site url -> fetchHTML()
+//Retrieve URL to fetch HTML
+//params: target site_id (INT.req), task_id(INT.req)
+//succ: -> fetchHTML(site_id, task_id)
+//fail: return error
 const fetchURL = (site_id, task_id) => {
   return db.Site.findOne({
     where: {
@@ -42,10 +47,14 @@ const fetchURL = (site_id, task_id) => {
   .catch(err => err)
 };
 
-//fetch HTML -> addHTML()
+//Retrieve HTML, handle _all_ possible returns
+//params: url(STRING.req), target site_id(INT.req), task_id(INT.req)
+//succ: -> 200 addHTML(retrievedHTML site_id, task_id) || addHTML(defaultHTML, site_id, task_id)
+//fail: addHTML(defaultHTML, site_id, task_id)
 const fetchHTML = (url, site_id, task_id) => {
   const defaultHtml = encodeURI('<html><body><div>Requested site unavailable.</div></body></html>')
   url = `http://${url}`
+  const strTest = '<script>console.log=function(){};</script>'
   return new Promise ((resolve, reject) => {
     return request({
       url: url,
@@ -60,12 +69,16 @@ const fetchHTML = (url, site_id, task_id) => {
       })
   })
   .then((response, body) => {
-    return response.statusCode === 200 ? addHtml(defaultHtml, site_id, task_id) : addHtml(response.body, site_id, task_id)
+    console.log('r e s p o n s e   o f  h t m l', response.statusCode)
+    return response.statusCode === 200 ? addHtml(`${strTest} ${response.body}`, site_id, task_id) : addHtml(defaultHtml, site_id, task_id)
   })
   .catch( err => addHtml(defaultHtml, site_id, task_id) );
 };
 
-//Add the html value to the Site -> shiftOffQueue()
+//Add HTML to site instance
+//params: html(STRING.req), target site_id(INT.req), task_id(INT.req)
+//succ: -> updateSite.then(shiftOffQueu(task_id))
+//fail: return err, STOP (retry later)
 const addHtml = (html, site_id, task_id) => {
   return db.Site.findOne({
     where: {
@@ -81,7 +94,10 @@ const addHtml = (html, site_id, task_id) => {
   .catch(err => err);
 };
 
-//Delete Task from TaskQueue
+//Shift task off of queue
+//params: task_id(INT.req)
+//succ: -> destroyTaskInstance.then(return corresponding siteId)
+//fail: return err, (retry later)
 const shiftOffQueue = (task_id) => {
   return db.Task.findOne({
       where: {
@@ -92,7 +108,7 @@ const shiftOffQueue = (task_id) => {
   .then(deletedTask => {
     return deletedTask.siteId;
   })
-  .catch(err => {console.log('destruction err'); return err});
+  .catch(err => err);
 };
 
 
@@ -100,6 +116,9 @@ const shiftOffQueue = (task_id) => {
 
 
 //Retrieve Top 5-hit Sites
+//params: n/a
+//succ: -> return Array[<Obj>] with .url[STRING], .html[STRING], .hits[INT]
+//fail: return error
 exports.getTopFiveSites = () => {
   return db.Site.findAll({
     limit: 5,

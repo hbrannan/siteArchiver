@@ -1,40 +1,37 @@
 const db = require('../database/connection');
 
-const checkForSiteAsTask = (targetId) => {
+//Check DB for Site given
+//params: id(INT)
+//succ: -> site exists increaseHitCount(site.id) || return null
+//fail: return err
+const checkForSiteById = (targetId) => {
   return db.Site.findOne({
     where: {
       id : Number(targetId)
     }
   })
-  .then(site => {
-    if (site) {
-      return increaseHitCount(site.id);
-    } else {
-      return site;
-    }
-  })
+  .then(site => site ? increaseHitCount(site.id) :  site)
   .catch(err => err);
 };
 
-// site exists: call addToHitCount... return site
-// else : add site as site &... as task.
+//Check DB for Site given url
+//params: id(INT)
+//succ: -> site exists increaseHitCount(site.id) || return null
+//fail: return err
 const checkForSite = (targetUrl) => {
   return db.Site.findOne({
     where: {
       url : targetUrl
     }
   })
-  .then(site => {
-    if (site) {
-      return increaseHitCount(site.id);
-    } else {
-      return site;
-    }
-  })
+  .then(site => site ? increaseHitCount(site.id) : site)
   .catch(err => err);
 };
 
-// add as a new site, & call new task
+//Add a new Site instance & initiate new task
+//params: url(STRING) --should include .domain (handled on client)
+//succ: -> site exists increaseHitCount(site.id) || return null
+//fail: return err
 const addNewSite = (targetUrl) => {
   return db.Site.create({
     url: targetUrl,
@@ -46,7 +43,10 @@ const addNewSite = (targetUrl) => {
   .catch((err) => err);
 };
 
-//add a new task and set the site_id as a foreign key
+//Add new Task instance, with site_id as a foreign key
+//params: site_id(INT.req)
+//succ: -> return site_id
+//fail: return err
 const addNewTask = (site_id) => {
   return db.Task.create()
   .then((task) => {
@@ -58,7 +58,10 @@ const addNewTask = (site_id) => {
   .catch((err) => err);
 };
 
-//get site by id, and increase its hit count
+//Increase its hitCount of target site
+//params: site_id(INT.req)
+//succ: -> return site
+//fail: return err
 const increaseHitCount = (site_id) => {
   return db.Site.findOne({ where: {
     id: site_id
@@ -73,6 +76,5 @@ const increaseHitCount = (site_id) => {
 module.exports = {
   checkForSite: checkForSite,
   addNewSite: addNewSite,
-  increaseHitCount: increaseHitCount,
-  checkForSiteAsTask: checkForSiteAsTask
+  checkForSiteById: checkForSiteById
 };

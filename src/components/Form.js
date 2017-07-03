@@ -35,8 +35,9 @@ class Form extends Component {
 
     return (
       <div className="form__container">
-        <form onSubmit={this.handleSubmit}>
-          <input value={this.state.formValue} onChange={this.handleChange} placeholder="Search for a site or enter job_id"/>
+        <form className="form__body" onSubmit={this.handleSubmit}>
+          <label className="form__label">Enter site or your provided Archive Job ID</label>
+          <input className="form__input" value={this.state.formValue} onChange={this.handleChange} placeholder="E.g.,'google', '6', or 'craigconnects.org'"/>
         </form>
         <div className="form__response">{responseMessage}</div>
         <div className="form__loading-dock"><SpinWheel /></div>
@@ -49,6 +50,8 @@ class Form extends Component {
     Remove http:// & /if !domainExists, add default ->  `.com`
   */
   static vetUrl (inputUrl) {
+    inputUrl = inputUrl.toLowerCase()
+
     if ( isNaN(inputUrl)){
       var val = inputUrl.split('//');
       if ( val.length > 1 ) {
@@ -56,7 +59,7 @@ class Form extends Component {
       } else {
         val = val[0];
       }
-
+      val = val.split(' ').join('')
       const valSplitAtDot = val.split('.');
       if (valSplitAtDot.length > 1) {
         return val;

@@ -6,13 +6,8 @@ class SiteFrame extends Component {
     super(props);
   }
 
-  handleSourceError (e) {
-    console.log('SiteFrame iframe src error', e);
-    e.preventDefault();
-  }
-
   render () {
-    return <iframe src={"data:text/html;charset=utf-8," + escape(this.props.site)} onError={this.handleSourceError.bind(this)} />
+    return <iframe src={`data:text/html;charset=utf-8,${this.props.site}`} />
   }
 
 }
@@ -24,4 +19,6 @@ todo, consider refactor:
 shouldComponentUpdate() {
  return false;
 }
+
+todo: avoid console erros -> capture error? inject overwrite of console.log fn?
 */
