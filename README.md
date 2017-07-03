@@ -1,9 +1,11 @@
 ## DESCRIPTION:
-  Web Scraper & Archiver with SearchView (using iFrames), SiteView, and Top 5 Most Hit display.
-  -React/Redux -Node/Express API -Cron regulated workers -and Sequelize + (dev) sqlite db.
+  Demo web Scraper & Archiver with a Job Queue that fetches & stores URL data from submissions.
+  Includes React/Redux client with SearchView (using iFrames), SiteView, and Top 5 Most Hit display.
+  -Node/Express REST API -Cron regulated workers -and Sequelize + sqlite db.
 
-## TODOS:
- - add styles
+## Next TODOS:
+ - improve styles
+ - separate out TaskQueue  from  Sites  .. separate DBs
  - improve testing coverage
 
 ## RUN:
@@ -58,6 +60,7 @@ Queue: (hasOne : Site)
  - return-to-site-display button
  - copy job_id to (cached) clipboard
  - webhook for topFiveUpdate
+ - webhook for your requested task # is completed
  - react router for browser history
  - action types file
  - update sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
