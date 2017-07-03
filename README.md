@@ -1,23 +1,33 @@
 ## DESCRIPTION:
-  Demo web Scraper & Archiver with a Job Queue that fetches & stores URL data from submissions.
-  Includes React/Redux client with SearchView (using iFrames), SiteView, and Top 5 Most Hit display.
-  -Node/Express REST API -Cron regulated workers -and Sequelize + sqlite db.
+  Demo Web Scraper/ Archiver synced with Job Queue ( called on cron job ) that fetches & stores URL data from submissions.
+  Project includes:
+  - React/Redux client with SearchView (using iFrames), SiteView, and Top 5 Most Hit display.
+  - Node/Express server:
+     - serves static client
+     - REST API to add / request sites
+     - inits cronJob to check Queue
+  - JobQueue:
+    - is called via cron job API tasks
+    - (if any) handles earliest task
+    - (upon confirmed html-add) deletes task from queue
+  -Sqlite DBs with Sequelize ORM
+  -Testing:
+    - Front end: Jest & Enzyme, Nock & Thunk
+    - Server: Mocha, Chai, and Supertest
 
-## Next TODOS:
- - improve styles
- - separate out TaskQueue  from  Sites  .. separate DBs
- - improve testing coverage
+## Install:
+ ```yarn install```
 
 ## RUN:
- - client: ``yarn start``
- - server: ``nodemon server/index.js``
+ - Client: ```yarn start```
+ - Server: ```yarn start:server```
+ - JobQueue: ```yarn start:queue```
 
 ## TEST:
+ - Client: ```yarn test```
+ - API + JobQueue: ```yarn test:queue``` && ```yarn test:server```
 
-``yarn test``
-
-
-## DB TABLES:
+## DB TABLE:
 Sites:
   - id
   - url
@@ -25,11 +35,13 @@ Sites:
   - hitCount
   - timestamp
 
+
+## QUEUE TABLE:
 Queue: (hasOne : Site)
   - id
-  - site_id
+  - siteId
 
-## API:
+## Client-Facing API:
 
   post /site, takes url:STRING
     if calling the API directly, note:
@@ -51,6 +63,11 @@ Queue: (hasOne : Site)
      - no params
      - returns an array of html string of the top 5 most hit sites
 
+## Next TODOS:
+ - improve start & testing scripts automation
+ - restrict cors
+ - improve styles
+ - improve testing coverage
 
 ## STRETCH ideas:
  - not found -> did you mean... ? (google search API integration)
@@ -63,6 +80,7 @@ Queue: (hasOne : Site)
  - webhook for your requested task # is completed
  - react router for browser history
  - action types file
+ - set up proxies with webpack
  - update sites every X time-period all matching on/before certain created-at timestamp (e.g. 2 wks ago);
  - site categories
  - cache user-sites in browser

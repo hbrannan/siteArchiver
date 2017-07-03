@@ -25,27 +25,7 @@ const Site = sequelize.define('sites', {
   }
 });
 
-const Task = sequelize.define('tasks', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  }
-});
-
-Task.belongsTo(Site);
-
 sequelize.sync();
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-//FOR DEV
-// sequelize.drop();
 
 module.exports = {
   Site: Site,

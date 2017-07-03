@@ -1,4 +1,15 @@
 const db = require('../../database/connection');
+const queue = require('../../jobQueue/queue')
+
+function initQueue () {
+  return queue.Task.create({
+    siteId: 1
+  })
+  .catch((err) => {
+    console.log('e r r o r  in initTestQUEUE!!', err)
+    return err
+  });
+}
 
 function initDB () {
   return db.Site.bulkCreate([
@@ -9,16 +20,18 @@ function initDB () {
     {url: 'billnye.com',hitCount: 7, html:null},
     {url: 'suzuki.com',hitCount: 0, html:null}
   ])
-  .then(() => {
-    return db.Task.create()
-  })
-  .then((task) => {
-    return task.setSite(1)
-  })
   .catch((err) => {
     console.log('e r r o r  in initTestDB!!', err)
     return err
   });
 }
 
-module.exports = initDB
+function init () {
+  return initDB()
+  .then(()=> {
+    return initQueue()
+  })
+  .catch(err => err)
+}
+
+module.exports = init

@@ -2,7 +2,8 @@ const supertest = require('supertest')
 const app = require('../../server/server.js')
 const request =  supertest(app)
 const db = require('../../database/connection')
-const initDB = require('./initTestDatabase')
+const queue = require('../../jobQueue/queue')
+const init = require('./initTestDatabase')
 const { pullFromQueue } = require('../../server/workerUtils')
 const { expect } = require('chai')
 
@@ -13,13 +14,21 @@ const { expect } = require('chai')
 */
 
 before(done => {
-  initDB()
+  init()
   .then(()=> done())
   .catch(err => done(err))
 })
 
 after(done => {
   db.sequelize.sync({force:true})
+  .then(() =>  {
+    done()
+  })
+  .catch(error =>  {
+    done(error)
+  })
+
+  queue.sequelize.sync({force:true})
   .then(() =>  {
     done()
   })

@@ -1,5 +1,7 @@
 database.sqlite
 databaseTest.sqlite
+queueTest.sqlite
+queue.sqlite
 node_modules
 npm-debug.log
 .env*
