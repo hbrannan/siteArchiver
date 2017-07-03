@@ -10,7 +10,6 @@ const db = require('../database/connection');
     _addHTML
     _shift off of Queue
 
-
   *Fetch Top 5 Sites
 
 */
@@ -18,7 +17,6 @@ const db = require('../database/connection');
 //Fetch the id and siteId from the taskQueue -> fetchURL()
 //If no site remains in TaskQueue, return out with msg {task: null}
 exports.pullFromQueue = () => {
-  console.log('pullFromQueue')
   return db.Task.findOne({
     attributes: [
       [db.sequelize.fn('min', db.sequelize.col('id')), 'id'],
@@ -26,7 +24,6 @@ exports.pullFromQueue = () => {
     ]
   })
   .then((task) => {
-    console.log(task.id, 't a s k    i d   a t be gi n n i n g')
     return task.id ? fetchURL(task.siteId, task.id) : { task: null };
   })
   .catch((err) =>  err);
@@ -34,7 +31,6 @@ exports.pullFromQueue = () => {
 
 //Given target site_id, return site url -> fetchHTML()
 const fetchURL = (site_id, task_id) => {
-  console.log('fetchURL', site_id, task_id)
   return db.Site.findOne({
     where: {
       id: site_id
@@ -48,66 +44,53 @@ const fetchURL = (site_id, task_id) => {
 
 //fetch HTML -> addHTML()
 const fetchHTML = (url, site_id, task_id) => {
-  console.log('calling fetch', url)
+  const defaultHtml = encodeURI('<html><body><div>Requested site unavailable.</div></body></html>')
+  url = `http://${url}`
   return new Promise ((resolve, reject) => {
-    return request(`http://${url}`, (error, response, body) => {
-      if (error) {
-         return reject(error);
-      } else {
-         return resolve(response, body);
-      }
-    })
+    return request({
+      url: url,
+      method: 'GET',
+      timeout: 5000
+      }, function (error, response) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      })
   })
   .then((response, body) => {
-    //////TODO: handling alt status codes e.g., 301s, 404s, 500s, etc.
-    console.log('succ. fetch', response.statusCode, site_id, task_id)
-    //TODO check status code:
-    // if (data.statusCode === 200) {
-    //   console.log('F E T C H D A T A', data.body.toString())
-    // }// todo: could make more robust
-    console.log(response.html, response.body)
-    return addHtml(response.body, site_id, task_id)
-    //else: send back 404 for message
+    return response.statusCode === 200 ? addHtml(defaultHtml, site_id, task_id) : addHtml(response.body, site_id, task_id)
   })
-  .catch( err => {
-    console.log('error in f e t c h    h t  m  l ')
-    return {'error': {type: 'fetchHTML', err: err}}
-  });
+  .catch( err => addHtml(defaultHtml, site_id, task_id) );
 };
 
 //Add the html value to the Site -> shiftOffQueue()
 const addHtml = (html, site_id, task_id) => {
-  console.log('calling addHTML', site_id, task_id)
   return db.Site.findOne({
     where: {
       id: site_id
     }
   })
   .then(site => {
-    console.log('calling addHTML, s i t e    d o e s    e x  i s t ')
     return site.update({ html: html });
   })
   .then((site) => {
-    console.log('t r y n a   s h i  f  t')
-    return shiftOffQueue(site.id)
+    return shiftOffQueue(task_id)
   })
-  .catch(err => {
-    console.log('e r r i n   a d d    h t m l', html, site_id, task_id)
-    return err
-  });
+  .catch(err => err);
 };
 
 //Delete Task from TaskQueue
-const shiftOffQueue = (site_id) => {
-  console.log('calling shift off queue')
+const shiftOffQueue = (task_id) => {
   return db.Task.findOne({
       where: {
-        siteId : site_id
+        id : task_id
       }
   })
-  .then((task) => {
-    console.log(' t a s k     t o    de s t r ')
-    return task.destroy();
+  .then((task) => task.destroy())
+  .then(deletedTask => {
+    return deletedTask.siteId;
   })
   .catch(err => {console.log('destruction err'); return err});
 };
@@ -118,7 +101,6 @@ const shiftOffQueue = (site_id) => {
 
 //Retrieve Top 5-hit Sites
 exports.getTopFiveSites = () => {
-  console.log('c a l l i n g   g e t    t o p   fi v e ')
   return db.Site.findAll({
     limit: 5,
     order: [

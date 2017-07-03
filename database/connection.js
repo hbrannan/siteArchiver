@@ -7,8 +7,6 @@ const sequelize = new Sequelize(process.env.DB_NAME, 'usr', 'pwd', {
   storage: process.env.DB_STORAGE
 });
 
-console.log(' L O A D E D   D B');
-
 const Site = sequelize.define('sites', {
   id: {
     type: Sequelize.INTEGER,

@@ -32,8 +32,6 @@ app.get('/', (req, res) => {
 });
 
 app.post('/site', (req, res) => {
-  console.log('P O S T I N G   S I T E ', req.body.url);
-
   if(req.body.url){
     utils.checkForSite(req.body.url)
     .then((site) => {
@@ -41,16 +39,16 @@ app.post('/site', (req, res) => {
       if (!site) {
         shouldAddSite = true;
       } else if (site && site.html) {
-        res.status(301).send({html: site.html});
+        res.status(200).send({html: site.html});
       } else {
-        res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
+        res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`, id: site.id});
       }
       return shouldAddSite;
     })
     .then((shouldAddSite) => {
       if (shouldAddSite){
-        utils.addNewSite(req.body.url)
-        .then(site => res.status(201).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.siteId}`}))
+        return utils.addNewSite(req.body.url)
+        .then(siteId => res.status(201).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${siteId}`, id: siteId}))
         .catch(err => res.status(500).send({error: err}))
       }
     })
@@ -61,16 +59,15 @@ app.post('/site', (req, res) => {
 });
 
 app.get('/site', (req, res) => {
-  console.log('G E T T I N G   S I T E ', req.query.id);
   if (req.query.id) {
     utils.checkForSiteAsTask(req.query.id)
     .then((site) => {
       if (site && site.html) {
-        res.status(301).send({html: site.html});
+        res.status(200).send({html: site.html});
       } else if (site) {
-        res.status(200).send({msg:`Check back soon! Archiving site! Your archive_job_id is ${site.id}`});
+        res.status(200).send({msg:`Check back soon! We are not yet done archiving your site with job_id ${req.query.id}`, id: req.query.id});
       } else {
-        res.status(200).send({msg:`We have no site with archive_job_id ${req.query.id}. Perhaps try typing in the site name.`});
+        res.status(200).send({msg:`We have no site with archive_job_id ${req.query.id}. Perhaps try resubmitting the site name.`});
       }
     })
     .catch(err => res.status(500).send({error: err}))
@@ -80,11 +77,9 @@ app.get('/site', (req, res) => {
 })
 
 app.get('/top-sites', (req, res) => {
-  console.log('G E T T I N G   T O P   S I T E S   O N   R  E Q U E S T');
-
   getTopFiveSites()
   .then(sites => {
-    console.log(sites);
+    sites.forEach(site => console.log(site.url, site.hitCount))
     res.status(200).send({ sites: sites });
   })
   .catch ( err => res.status(500).send({error: err}) );
