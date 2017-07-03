@@ -9,7 +9,6 @@ class Form extends Component {
     this.state = {
       formValue: ''
     }
-    console.log(props)
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -46,6 +45,7 @@ class Form extends Component {
   }
 
   /*
+    Convert to lower case, trim spaces, send number, add .com if no provided domain.
     Param, inputUrl = STRING || NUMBER
     Remove http:// & /if !domainExists, add default ->  `.com`
   */

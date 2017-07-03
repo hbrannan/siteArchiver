@@ -31,7 +31,15 @@ app.get('/', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname + '/../client/index.html'))
 })
 
-//Should include .domin
+//POST to /site
+// params: url(STRING) -- should include .domin, should NOT include http://
+// S U C C :
+//    -> site & HTML exist: increaseHitCount(site.id)   return  {}.html = ENCODED HTML STRING  200
+//    -> site exists, !HTML: increaseHitCount(site.id)  return  {}.id[INT], {}.msg:STRING      200
+//    -> site !exists addSite(url)                      return  {}.id[INT], {}.msg:STRING      200
+//    -> params invalid or !params                      return  {}.msg:STRING                  400
+// F A I L :
+//    ->                                                return  {}.error                       500
 app.post('/site', (req, res) => {
   if(req.body.url){
     utils.checkForSite(req.body.url)
@@ -59,6 +67,15 @@ app.post('/site', (req, res) => {
   }
 })
 
+//GET to /site
+// params: id(INT), stringified Number OK
+// S U C C :
+//    -> site & HTML exist: increaseHitCount(site.id)   return  {}.html = ENCODED HTML STRING  200
+//    -> site exists, !HTML: increaseHitCount(site.id)  return  {}.id[INT], {}.msg:STRING      200
+//    -> site !exists                                   return  {}.id[INT], {}.msg:STRING      200
+//    -> params invalid or !params                      return  {}.msg:STRING                  400
+// F A I L :
+//    ->                                                return  {}.error                       500
 app.get('/site', (req, res) => {
   if (req.query.id) {
     utils.checkForSiteById(req.query.id)
@@ -77,6 +94,12 @@ app.get('/site', (req, res) => {
   }
 })
 
+//GET to /top-sites
+// params: n / a
+// S U C C :
+//    ->      return  {}.sites = [<HTML STRINGs>]  200
+// F A I L :
+//    ->      return  {}.error                     500
 app.get('/top-sites', (req, res) => {
   getTopFiveSites()
   .then(sites => {
