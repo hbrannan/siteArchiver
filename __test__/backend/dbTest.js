@@ -1,9 +1,9 @@
 const supertest = require('supertest')
-const app = require('../server/server.js')
+const app = require('../../server/server.js')
 const request =  supertest(app)
-const db = require('../database/connection')
+const db = require('../../database/connection')
 const initDB = require('./initTestDatabase')
-const { pullFromQueue } = require('../server/workerUtils')
+const { pullFromQueue } = require('../../server/workerUtils')
 const { expect } = require('chai')
 
 /*  T O C
@@ -19,7 +19,7 @@ before(done => {
 })
 
 after(done => {
-  db.sequelize.drop()
+  db.sequelize.sync({force:true})
   .then(() =>  {
     done()
   })
@@ -48,8 +48,11 @@ describe('Site by URL', () => {
     request
       .post('/site')
       .send({ url: 'google.com' })
-      .expect(200, {
-        html: '%3Chtml%3E%3Cbody%3E%3Cdiv%3EHello%20World%3C/div%3E%3C/body%3E%3C/html%3E'
+      .expect(200)
+      .expect(res => {
+        if (!res.length === 5) {
+          throw new Error('Missing sites from top 5 list')
+        }
       })
       .end(function (err, res) {
         if (err) return done(err)
@@ -70,10 +73,6 @@ describe('Site by URL', () => {
         done()
       });
   })
-
-  // it('handles unexpected status codes', (done) => {
-
-  // })
 })
 
 describe('Site by id', () => {
@@ -124,7 +123,7 @@ describe('Task', () => {
   it('should dequeue on call', (done) => {
     pullFromQueue()
     .then(res => {
-      expect(res).to.equal(7);
+      expect(res).to.equal(1);
       done()
     })
     .catch(err => done(err))
@@ -133,9 +132,11 @@ describe('Task', () => {
 
 
 /*
+
 Todos:
 - inc. hit count,
 - html becomes queryable for site after dq
+- appropriate handling of non-200 status codes
 
 */
 

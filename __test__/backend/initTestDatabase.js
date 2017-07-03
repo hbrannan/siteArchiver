@@ -1,4 +1,4 @@
-const db = require('../database/connection');
+const db = require('../../database/connection');
 
 function initDB () {
   return db.Site.bulkCreate([
@@ -16,7 +16,7 @@ function initDB () {
     return task.setSite(1)
   })
   .catch((err) => {
-    console.log('e r r o r  in initTestDB!!')
+    console.log('e r r o r  in initTestDB!!', err)
     return err
   });
 }
